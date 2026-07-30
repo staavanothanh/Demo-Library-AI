@@ -14,15 +14,20 @@ Mini-project for Sessions 10 and 11: an Express/EJS library application with Mon
 ## Project structure
 
 ```text
-app.js                         Express entry point
-models/                        User and Book Mongoose models
-middleware/auth.js             Logged-in/admin guards
-services/tensorflowWorker.js   Background AI worker
-services/tensorflowService.js  USE embeddings + cosine similarity
-scripts/seedBooks.js           Seed catalog
-views/                         EJS pages and partials
-public/                        Browser JavaScript and CSS
-tests/                         Vitest/Supertest checks
+server.js                           Runtime entry point: database, sessions, admin setup, listener
+app.js                              Express application factory and middleware/router composition
+config/passport.js                  Passport Local strategy and session serialization
+controllers/                        Auth, catalog, admin, and recommendation request handlers
+routes/                             URL declarations, validation chains, and access guards
+models/                             User and Book Mongoose models
+middleware/                         Authentication/authorization and shared validation helpers
+services/recommendationClient.js    Worker client and book-index refresh boundary
+services/tensorflowWorker.js        Background AI worker
+services/tensorflowService.js       USE embeddings and cosine similarity
+scripts/seedBooks.js                Seed catalog
+views/                              EJS pages and partials
+public/                             Browser JavaScript and CSS
+tests/                              Vitest/Supertest checks
 ```
 
 ## Run locally

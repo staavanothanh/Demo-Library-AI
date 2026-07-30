@@ -28,4 +28,41 @@ describe("Library routes", () => {
     expect(response.status).toBe(302);
     expect(response.headers.location).toContain("/login?message=");
   });
+
+  it("renders public home and auth pages", async () => {
+    const [home, register, login] = await Promise.all([
+      request(app).get("/"),
+      request(app).get("/register"),
+      request(app).get("/login"),
+    ]);
+
+    expect(home.status).toBe(200);
+    expect(register.status).toBe(200);
+    expect(login.status).toBe(200);
+  });
+
+  it("keeps registration validation errors on the registration view", async () => {
+    const response = await request(app)
+      .post("/register")
+      .type("form")
+      .send({ username: "a", password: "short" });
+
+    expect(response.status).toBe(422);
+    expect(response.text).toContain("Username must be 3–30 characters.");
+    expect(response.text).toContain("Password must contain at least 8 characters.");
+  });
+
+  it("preserves the administrator alias redirect", async () => {
+    const response = await request(app).get("/admin");
+
+    expect(response.status).toBe(302);
+    expect(response.headers.location).toBe("/admin-dashboard");
+  });
+
+  it("renders the existing not-found response", async () => {
+    const response = await request(app).get("/missing-page");
+
+    expect(response.status).toBe(404);
+    expect(response.text).toContain("The page you requested was not found.");
+  });
 });

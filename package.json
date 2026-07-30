@@ -2,14 +2,14 @@
   "name": "library-ai-recommendations",
   "version": "1.0.0",
   "description": "A Session 10 + 11 Library Management and AI Recommendation mini-project.",
-  "main": "app.js",
+  "main": "server.js",
   "type": "commonjs",
   "engines": {
     "node": ">=22"
   },
   "scripts": {
-    "dev": "nodemon app.js",
-    "start": "node app.js",
+    "dev": "nodemon server.js",
+    "start": "node server.js",
     "seed": "node scripts/seedBooks.js",
     "test": "vitest run"
   },
