@@ -5,7 +5,7 @@ dns.setServers(["1.1.1.1", "1.0.0.1"]);
 const path = require("path");
 const express = require("express");
 const session = require("express-session");
-const MongoStore = require("connect-mongo");
+const { MongoStore } = require("connect-mongo");
 const passport = require("passport");
 const { Strategy: LocalStrategy } = require("passport-local");
 const mongoose = require("mongoose");
@@ -76,7 +76,7 @@ async function ensureAdmin() {
   await User.findOneAndUpdate(
     { username },
     { $set: { username, passwordHash: await bcrypt.hash(password, 12), role: "admin" } },
-    { upsert: true, new: true, setDefaultsOnInsert: true },
+    { upsert: true, returnDocument: "after", setDefaultsOnInsert: true },
   );
 }
 
