@@ -13,7 +13,7 @@
     <% if (user) { %>
       <a href="/booklist">Catalog</a>
       <a href="/tensorflow-chat">AI Finder</a>
-      <% if (user.role === "admin") { %><a href="/admin-dashboard">Admin</a><% } %>
+      <% if (user.role === "admin") { %><a href="/admin-dashboard">Add book</a><% } %>
       <form action="/logout" method="post"><button class="link-button">Log out</button></form>
     <% } else { %>
       <a href="/login">Sign in</a><a class="nav-button" href="/register">Join library</a>
