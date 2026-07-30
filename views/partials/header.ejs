@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Leaf & Logic Library</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="/">Leaf <span>&</span> Logic</a>
+  <nav>
+    <% if (user) { %>
+      <a href="/booklist">Catalog</a>
+      <a href="/tensorflow-chat">AI Finder</a>
+      <% if (user.role === "admin") { %><a href="/admin-dashboard">Admin</a><% } %>
+      <form action="/logout" method="post"><button class="link-button">Log out</button></form>
+    <% } else { %>
+      <a href="/login">Sign in</a><a class="nav-button" href="/register">Join library</a>
+    <% } %>
+  </nav>
+</header>
+<main>
+  <% if (message) { %><p class="notice"><%= message %></p><% } %>
