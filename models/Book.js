@@ -11,6 +11,6 @@ const bookSchema = new mongoose.Schema({
   textReviewsCount: { type: Number, default: 0 },
   publicationDate: { type: String, default: "" },
   publisher: { type: String, default: "" },
-}, { timestamps: true, collection: "booksforai" });
+}, { timestamps: true, collection: "books" });
 
 module.exports = mongoose.model("Book", bookSchema);
