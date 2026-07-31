@@ -1,3 +1,10 @@
 <%- include("partials/header") %>
-<section class="form-card"><p class="eyebrow">ERROR <%= status %></p><h1>We could not complete that request.</h1><p><%= message %></p><a class="button" href="/">Return home</a></section>
-<%- include("partials/footer") %>
+    <section class="form-card">
+        <p class="eyebrow">ERROR <%= status %>
+        </p>
+        <h1>We could not complete that request.</h1>
+        <p>
+            <%= message %>
+        </p><a class="button" href="/">Return home</a>
+    </section>
+    <%- include("partials/footer") %>

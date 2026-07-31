@@ -1,4 +1,13 @@
 <%- include("partials/header") %>
-<section class="form-card wide"><p class="eyebrow">SEMANTIC RECOMMENDATIONS</p><h1>Ask AI Finder</h1><p>Describe what you want to learn or read. The local Universal Sentence Encoder compares your request to the library catalog.</p><form id="recommendation-form"><label>What kind of book are you looking for?<textarea id="prompt" rows="4" placeholder="For example: I want a practical book about backend APIs and scalable JavaScript systems." required></textarea></label><button class="button" type="submit">Find books</button></form><div id="recommendation-result" class="recommendation-result" aria-live="polite"></div></section>
-<script src="/js/recommendations.js"></script>
-<%- include("partials/footer") %>
+    <section class="form-card wide">
+        <p class="eyebrow">SEMANTIC RECOMMENDATIONS</p>
+        <h1>Ask AI Finder</h1>
+        <p>Describe what you want to learn or read. The local Universal Sentence Encoder compares your request to the
+            library catalog.</p>
+        <form id="recommendation-form"><label>What kind of book are you looking for?<textarea id="prompt" rows="4"
+                    placeholder="For example: I want a practical book about backend APIs and scalable JavaScript systems."
+                    required></textarea></label><button class="button" type="submit">Find books</button></form>
+        <div id="recommendation-result" class="recommendation-result" aria-live="polite"></div>
+    </section>
+    <script src="/js/recommendations.js"></script>
+    <%- include("partials/footer") %>

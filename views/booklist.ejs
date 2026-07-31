@@ -1,6 +1,44 @@
 <%- include("partials/header") %>
-<section class="page-heading"><p class="eyebrow">THE COLLECTION</p><h1>Browse the library</h1><p>Search by title, author, or genre. Ask the AI Finder when you want recommendations by meaning.</p></section>
-<form class="search-form" action="/booklist" method="get"><input name="q" value="<%= query %>" placeholder="Try: Node.js, database, artificial intelligence"><button class="button" type="submit">Search</button></form>
-<section class="book-grid"><% books.forEach((book) => { %><article class="book-card"><p class="tag"><%= book.genre || "Library" %></p><h2><%= book.title %></h2><p class="author"><%= book.authors %></p><p><%= book.description || "No description available." %></p><dl><div><dt>Rating</dt><dd><%= book.averageRating || "—" %>/5</dd></div><div><dt>Published</dt><dd><%= book.publicationDate || "—" %></dd></div></dl></article><% }) %></section>
-<% if (!books.length) { %><p class="empty">No books matched your search. Try a different phrase.</p><% } %>
-<%- include("partials/footer") %>
+    <section class="page-heading">
+        <p class="eyebrow">THE COLLECTION</p>
+        <h1>Browse the library</h1>
+        <p>Search by title, author, or genre. Ask the AI Finder when you want recommendations by meaning.</p>
+    </section>
+    <form class="search-form" action="/booklist" method="get"><input name="q" value="<%= query %>"
+            placeholder="Try: Node.js, database, artificial intelligence"><button class="button"
+            type="submit">Search</button></form>
+    <section class="book-grid">
+        <% books.forEach((book)=> { %><article class="book-card">
+                <p class="tag">
+                    <%= book.genre || "Library" %>
+                </p>
+                <h2>
+                    <%= book.title %>
+                </h2>
+                <p class="author">
+                    <%= book.authors %>
+                </p>
+                <p>
+                    <%= book.description || "No description available." %>
+                </p>
+                <dl>
+                    <div>
+                        <dt>Rating</dt>
+                        <dd>
+                            <%= book.averageRating || "—" %>/5
+                        </dd>
+                    </div>
+                    <div>
+                        <dt>Published</dt>
+                        <dd>
+                            <%= book.publicationDate || "—" %>
+                        </dd>
+                    </div>
+                </dl>
+            </article>
+            <% }) %>
+    </section>
+    <% if (!books.length) { %>
+        <p class="empty">No books matched your search. Try a different phrase.</p>
+        <% } %>
+            <%- include("partials/footer") %>

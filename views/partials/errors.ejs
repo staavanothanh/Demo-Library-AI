@@ -1,1 +1,8 @@
-<% if (errors?.length) { %><div class="errors"><% errors.forEach((error) => { %><p><%= error.msg %></p><% }) %></div><% } %>
+<% if (errors?.length) { %>
+    <div class="errors">
+        <% errors.forEach((error)=> { %><p>
+                <%= error.msg %>
+            </p>
+            <% }) %>
+    </div>
+    <% } %>

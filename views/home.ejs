@@ -1,15 +1,29 @@
 <%- include("partials/header") %>
-<section class="hero">
-  <p class="eyebrow">YOUR LEARNING LIBRARY</p>
-  <h1>Find the next book that moves your ideas forward.</h1>
-  <p>Browse a focused collection, manage titles responsibly, and use TensorFlow-powered semantic recommendations to discover what to read next.</p>
-  <div class="actions">
-    <% if (user) { %><a class="button" href="/booklist">Browse the catalog</a><a class="button secondary" href="/tensorflow-chat">Ask AI Finder</a><% } else { %><a class="button" href="/register">Create an account</a><a class="button secondary" href="/login">Sign in</a><% } %>
-  </div>
-</section>
-<section class="feature-grid">
-  <article><h2>Organize</h2><p>Members can search the catalog while administrators curate new titles.</p></article>
-  <article><h2>Discover</h2><p>Describe what you want to learn in natural language—not just exact keywords.</p></article>
-  <article><h2>Learn</h2><p>Recommendations compare semantic embeddings from book titles and descriptions.</p></article>
-</section>
-<%- include("partials/footer") %>
+  <section class="hero">
+    <p class="eyebrow">YOUR LEARNING LIBRARY</p>
+    <h1>Find the next book that moves your ideas forward.</h1>
+    <p>Browse a focused collection, manage titles responsibly, and use TensorFlow-powered semantic recommendations to
+      discover what to read next.</p>
+    <div class="actions">
+      <% if (user) { %><a class="button" href="/booklist">Browse the catalog</a><a class="button secondary"
+          href="/tensorflow-chat">Ask AI Finder</a>
+        <% } else { %><a class="button" href="/register">Create an account</a><a class="button secondary"
+            href="/login">Sign in</a>
+          <% } %>
+    </div>
+  </section>
+  <section class="feature-grid">
+    <article>
+      <h2>Organize</h2>
+      <p>Members can search the catalog while administrators curate new titles.</p>
+    </article>
+    <article>
+      <h2>Discover</h2>
+      <p>Describe what you want to learn in natural language—not just exact keywords.</p>
+    </article>
+    <article>
+      <h2>Learn</h2>
+      <p>Recommendations compare semantic embeddings from book titles and descriptions.</p>
+    </article>
+  </section>
+  <%- include("partials/footer") %>
