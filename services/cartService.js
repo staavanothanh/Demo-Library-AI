@@ -45,10 +45,39 @@ function getCartCount(cart = []) {
   return cart.reduce((total, item) => total + item.quantity, 0);
 }
 
+function toCents(value) {
+  const amount = Number(value);
+  if (!Number.isFinite(amount) || amount < 0) throw new Error("Price must be a non-negative number");
+  return Math.round(amount * 100);
+}
+
+function buildCartView({ cart = [], books = [] }) {
+  const booksById = new Map(books.map((book) => [String(book._id), book]));
+  const items = [];
+  let removedCount = 0;
+  for (const entry of cart) {
+    const book = booksById.get(String(entry.bookId));
+    if (!book) {
+      removedCount += 1;
+      continue;
+    }
+    const quantity = Math.min(entry.quantity, book.stock);
+    if (quantity <= 0) {
+      removedCount += 1;
+      continue;
+    }
+    items.push({ book, quantity, subtotalCents: toCents(book.price) * quantity });
+  }
+  const totalCents = items.reduce((total, item) => total + item.subtotalCents, 0);
+  return { items, totalCents, total: totalCents / 100, removedCount };
+}
+
 module.exports = {
   addItem,
   updateItem,
   removeItem,
   getCartCount,
   isValidBookId,
+  toCents,
+  buildCartView,
 };
