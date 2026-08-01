@@ -24,11 +24,12 @@ Mini-project for Sessions 10 and 11: an Express/EJS bookstore MVP with MongoDB u
 models/Comment.js                   Public comments
 models/KnowledgeChunk.js             Indexed policy chunks
 services/cartService.js              Immutable session-cart calculations
-services/policyIndexer.js             Deterministic Markdown policy indexing
-services/policyService.js              Atlas/fallback policy retrieval
-services/chatbotService.js             Intent routing and safe provider context
+services/sessionTransitionState.js   Allowlisted state across auth rotation
+services/policyIndexer.js            Deterministic Markdown policy indexing
+services/policyService.js            Atlas/fallback policy retrieval
+services/chatbotService.js           Intent routing and safe provider context
 services/aiProviders/openCodeZenProvider.js  OpenCode Zen adapter
-middleware/csrf.js                    Session-backed mutation protection
+middleware/csrf.js                   Session-backed mutation protection
 ```
 
 ```text
@@ -60,7 +61,28 @@ SESSION_SECRET=use-a-long-random-string
 ADMIN_USERNAME=admin
 ADMIN_PASSWORD=choose-a-strong-password
 NODE_ENV=development
+TRUST_PROXY_HOPS=0
 ```
+
+`TRUST_PROXY_HOPS` is the number of reverse-proxy hops that the application is allowed to trust:
+
+- Local HTTP development: `TRUST_PROXY_HOPS=0`.
+- Render production: set `NODE_ENV=production` and `TRUST_PROXY_HOPS=1`. Render terminates HTTPS at one forwarding hop before Node.js. Keep the session cookie secure; do not work around this by disabling `Secure`.
+
+Keep one canonical browser origin during local testing (`localhost` and `127.0.0.1` are different cookie hosts). `connect.sid` is `HttpOnly`, so it is expected not to appear in `document.cookie`; inspect it through browser DevTools Network/Application storage. After changing `SESSION_SECRET`, proxy topology, host, or port, clear stale cookies and reload the page so the hidden CSRF token and session cookie belong to the same session.
+
+### Render deployment checklist
+
+Configure these values in Render's service environment, not in committed files:
+
+```env
+NODE_ENV=production
+TRUST_PROXY_HOPS=1
+SESSION_SECRET=<stable-long-random-secret>
+MONGODB_URI=<configured-in-render-secret>
+```
+
+Render supplies `PORT`; do not hard-code a production port. Use the same canonical HTTPS hostname for login and subsequent form submissions. After changing the session secret or proxy setting, redeploy and clear the old site cookie before testing again. A forwarded-HTTPS `GET /login` should return a `connect.sid` cookie with `Secure; HttpOnly; SameSite=Lax`.
 
 3. Prepare existing catalog records and seed clone data:
 

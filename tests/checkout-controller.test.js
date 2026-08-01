@@ -12,9 +12,50 @@ describe("fake checkout", () => {
 
     const result = await controller.checkout(req, response, (error) => { throw error; });
 
-    expect(result).toEqual({ ok: true, message: "Demo payment completed. No real payment was processed.", total: 20 });
+    expect(result).toEqual({ ok: true, message: "Demo payment completed. No real payment was processed.", total: 20, cartCount: 0 });
     expect(req.session.cart).toEqual([]);
     expect(book.stock).toBe(5);
+  });
+
+  it("returns JSON for explicit checkout API requests", async () => {
+    const id = new mongoose.Types.ObjectId().toString();
+    const book = { _id: id, title: "Demo", price: 10, stock: 5 };
+    const Book = { find: () => ({ lean: async () => [book] }) };
+    const controller = createCheckoutController({ Book });
+    const req = { get: () => "application/json", session: { cart: [{ bookId: id, quantity: 1 }] } };
+    const response = { json: (body) => body, redirect: () => { throw new Error("unexpected redirect"); } };
+
+    const result = await controller.checkout(req, response, (error) => { throw error; });
+
+    expect(result).toEqual({ ok: true, message: "Demo payment completed. No real payment was processed.", total: 10, cartCount: 0 });
+    expect(req.session.cart).toEqual([]);
+  });
+
+  it("redirects native checkout forms back to the cart page", async () => {
+    const id = new mongoose.Types.ObjectId().toString();
+    const book = { _id: id, title: "Demo", price: 10, stock: 5 };
+    const Book = { find: () => ({ lean: async () => [book] }) };
+    const controller = createCheckoutController({ Book });
+    const req = { get: () => "text/html", session: { cart: [{ bookId: id, quantity: 1 }] } };
+    const response = {
+      redirect: (status, location) => ({ status, location }),
+      json: (body) => body,
+    };
+
+    const result = await controller.checkout(req, response, (error) => { throw error; });
+
+    expect(result).toEqual({ status: 303, location: "/cart?message=Demo%20payment%20completed.%20No%20real%20payment%20was%20processed." });
+    expect(req.session.cart).toEqual([]);
+  });
+
+  it("returns a safe HTML redirect for invalid native checkout", async () => {
+    const controller = createCheckoutController({ Book: { find: () => { throw new Error("should not query"); } } });
+    const req = { get: () => "text/html", session: { cart: [] } };
+    const response = { status: (code) => { response.code = code; return response; }, json: (body) => body, redirect: (status, location) => ({ status, location }) };
+
+    const result = await controller.checkout(req, response, (error) => { throw error; });
+
+    expect(result).toEqual({ status: 303, location: "/cart?message=Your%20cart%20is%20empty." });
   });
 
   it("rejects an empty cart without calling a payment provider", async () => {

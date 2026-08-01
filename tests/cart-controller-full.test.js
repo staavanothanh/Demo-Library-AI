@@ -38,4 +38,51 @@ describe("complete cart controller", () => {
     expect(await controller.clearCart(req, response)).toEqual({ ok: true, cartCount: 0 });
     expect(req.session.cart).toEqual([]);
   });
+
+  it("redirects native remove and clear forms back to the cart page", async () => {
+    const id = new mongoose.Types.ObjectId().toString();
+    const book = { _id: id, stock: 4, price: 5 };
+    const Book = { findById: () => queryResult(book) };
+    const controller = createCartController({ Book });
+    const redirects = [];
+    const response = {
+      json: (body) => body,
+      status: () => response,
+      redirect: (status, location) => { redirects.push({ status, location }); return redirects.at(-1); },
+    };
+    const htmlRequest = () => ({
+      body: {},
+      params: { id },
+      get: (name) => name.toLowerCase() === "accept" ? "text/html" : undefined,
+      session: { cart: [{ bookId: id, quantity: 1 }] },
+    });
+
+    const removeRequest = htmlRequest();
+    await controller.removeItem(removeRequest, response, (error) => { throw error; });
+    const updateRequest = { ...htmlRequest(), body: { quantity: "2" } };
+    await controller.updateItem(updateRequest, response, (error) => { throw error; });
+    const clearRequest = { ...htmlRequest(), session: { cart: [{ bookId: id, quantity: 1 }] } };
+    await controller.clearCart(clearRequest, response);
+
+    expect(redirects).toEqual([
+      { status: 303, location: "/cart?message=Item%20removed%20from%20your%20cart." },
+      { status: 303, location: "/cart?message=Cart%20updated." },
+      { status: 303, location: "/cart?message=Cart%20cleared." },
+    ]);
+    expect(removeRequest.session.cart).toEqual([]);
+    expect(updateRequest.session.cart).toEqual([{ bookId: id, quantity: 2 }]);
+    expect(clearRequest.session.cart).toEqual([]);
+  });
+
+  it("keeps explicit JSON mutation responses and authoritative counts", async () => {
+    const id = new mongoose.Types.ObjectId().toString();
+    const book = { _id: id, stock: 4, price: 5 };
+    const controller = createCartController({ Book: { findById: () => queryResult(book) } });
+    const response = { json: (body) => body, status: () => response, redirect: () => { throw new Error("unexpected redirect"); } };
+    const req = { body: {}, params: { id }, get: () => "application/json", session: { cart: [{ bookId: id, quantity: 2 }] } };
+
+    expect(await controller.removeItem(req, response, (error) => { throw error; })).toEqual({ ok: true, cartCount: 0 });
+    req.session.cart = [{ bookId: id, quantity: 2 }];
+    expect(await controller.clearCart(req, response)).toEqual({ ok: true, cartCount: 0 });
+  });
 });

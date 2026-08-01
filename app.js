@@ -37,7 +37,8 @@ const { createRecommendationRoutes } = require("./routes/recommendationRoutes");
 
 function createApp({ sessionStore, recommendationClient = createRecommendationClient({ Book }), chatbotService } = {}) {
   const app = express();
-  const trustedProxyHops = Number(process.env.TRUST_PROXY_HOPS || 0);
+  const rawTrustedProxyHops = process.env.TRUST_PROXY_HOPS;
+  const trustedProxyHops = rawTrustedProxyHops === undefined || rawTrustedProxyHops === "" ? 0 : Number(rawTrustedProxyHops);
   if (!Number.isInteger(trustedProxyHops) || trustedProxyHops < 0 || trustedProxyHops > 10) throw new Error("TRUST_PROXY_HOPS must be an integer from 0 to 10.");
   app.set("trust proxy", trustedProxyHops);
   app.set("view engine", "ejs");

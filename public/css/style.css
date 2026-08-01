@@ -415,6 +415,11 @@ textarea:focus {
   color: var(--moss-dark);
 }
 
+.cart-status-error {
+  background: #f8e3dc;
+  color: var(--danger);
+}
+
 .errors {
   background: #f8e3dc;
   color: var(--danger);

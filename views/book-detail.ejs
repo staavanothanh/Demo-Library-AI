@@ -30,15 +30,18 @@
             <%= book.stock> 0 ? `${book.stock} available` : "Currently out of stock" %>
           </p>
         </div>
-        <% if (book.stock> 0) { %><form class="inline-form purchase-form" action="/cart/items" method="post"><input
-              type="hidden" name="_csrf" value="<%= csrfToken %>"><input type="hidden" name="bookId"
-              value="<%= book._id %>">
-            <div class="field quantity-field"><label for="quantity">Quantity</label><input id="quantity" name="quantity"
-                type="number" min="1" max="<%= book.stock %>" value="1" required></div><button class="button"
-              type="submit">Add to
-              cart</button>
+        <% if (book.stock > 0) { %>
+          <form class="inline-form purchase-form" action="/cart/items" method="post" data-cart-form>
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <input type="hidden" name="bookId" value="<%= book._id %>">
+            <div class="field quantity-field">
+              <label for="quantity">Quantity</label>
+              <input id="quantity" name="quantity" type="number" min="1" max="<%= book.stock %>" value="1" required>
+            </div>
+            <button class="button" type="submit">Add to cart</button>
           </form>
-          <% } %>
+          <p class="notice cart-status" data-cart-status role="status" aria-live="polite" hidden></p>
+        <% } %>
       </div>
     </div>
   </section>

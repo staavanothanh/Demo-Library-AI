@@ -10,6 +10,7 @@
                     aria-hidden="true">→</span></a>
         </section>
         <% } else { %>
+            <p class="notice cart-status" data-cart-status role="status" aria-live="polite" hidden></p>
             <section class="form-card wide cart-card">
                 <div class="cart-items">
                     <% items.forEach((item)=> { %><article class="cart-row">
@@ -21,7 +22,7 @@
                                     <%= formatCurrency(item.book.price) %> each
                                 </p>
                             </div>
-                            <form class="cart-update" action="/cart/items/<%= item.book._id %>/update" method="post">
+                            <form class="cart-update" action="/cart/items/<%= item.book._id %>/update" method="post" data-cart-mutation>
                                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                                 <div class="field"><label for="quantity-<%= item.book._id %>">Quantity</label><input
                                         id="quantity-<%= item.book._id %>" name="quantity" type="number" min="1"
@@ -30,7 +31,7 @@
                             </form><strong class="cart-subtotal">
                                 <%= formatCurrency(item.subtotalCents / 100) %>
                             </strong>
-                            <form action="/cart/items/<%= item.book._id %>/remove" method="post"><input type="hidden"
+                            <form action="/cart/items/<%= item.book._id %>/remove" method="post" data-cart-mutation><input type="hidden"
                                     name="_csrf" value="<%= csrfToken %>"><button class="link-button"
                                     type="submit">Remove</button></form>
                         </article>
@@ -40,9 +41,9 @@
                         <%= formatCurrency(total) %>
                     </strong></div>
                 <div class="cart-actions">
-                    <form action="/checkout" method="post"><input type="hidden" name="_csrf"
+                    <form action="/checkout" method="post" data-checkout-form><input type="hidden" name="_csrf"
                             value="<%= csrfToken %>"><button class="button" type="submit">Demo checkout</button></form>
-                    <form action="/cart/clear" method="post"><input type="hidden" name="_csrf"
+                    <form action="/cart/clear" method="post" data-cart-mutation><input type="hidden" name="_csrf"
                             value="<%= csrfToken %>"><button class="button secondary" type="submit">Clear cart</button>
                     </form>
                 </div>
