@@ -27,8 +27,16 @@ function createRecommendationClient({ Book }) {
     ensureWorker().postMessage({ ...payload, requestId });
   });
   return {
-    refreshBooks: async () => send({ type: "loadBooks", books: await Book.find({}).limit(300).lean() }),
+    refreshBooks: async () => send({ type: "loadBooks", books: await Book.find({}).lean() }),
     recommend: async (prompt) => send({ type: "recommend", prompt }),
+    embed: async (text) => {
+      const result = await send({ type: "embedTexts", texts: [text] });
+      return result.embeddings[0] || [];
+    },
+    embedMany: async (texts) => {
+      const result = await send({ type: "embedTexts", texts });
+      return result.embeddings || [];
+    },
     stop: async () => worker?.terminate(),
   };
 }

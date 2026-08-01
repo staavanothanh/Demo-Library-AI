@@ -1,8 +1,15 @@
-# Library + AI Recommendations
+# Leaf & Logic Books — Bookstore MVP
 
-Mini-project for Sessions 10 and 11: an Express/EJS library application with MongoDB users and books, Passport session login, an administrator dashboard, and a local TensorFlow Universal Sentence Encoder recommendation feature.
+Mini-project for Sessions 10 and 11: an Express/EJS bookstore MVP with MongoDB users/books/comments/policy chunks, Passport sessions, an Express-session cart, fake checkout, TensorFlow retrieval, and an OpenCode Zen chatbot.
 
 ## Features
+
+- Public paginated bookstore catalog with product detail pages.
+- Server-side Express-session cart and fake checkout; no real payment or order persistence.
+- Public comments with authenticated posting.
+- Floating chatbot for policy retrieval, book information, and recommendations.
+- Policy answers are grounded in indexed internal demo documents and refuse unsupported questions.
+- OpenCode Zen provider failures are handled without stopping the web process.
 
 - Register and sign in as a library member.
 - Browse and search books by title, author, or genre.
@@ -12,6 +19,17 @@ Mini-project for Sessions 10 and 11: an Express/EJS library application with Mon
 - Passwords are bcrypt-hashed; database and session secrets come from environment variables.
 
 ## Project structure
+
+```text
+models/Comment.js                   Public comments
+models/KnowledgeChunk.js             Indexed policy chunks
+services/cartService.js              Immutable session-cart calculations
+services/policyIndexer.js             Deterministic Markdown policy indexing
+services/policyService.js              Atlas/fallback policy retrieval
+services/chatbotService.js             Intent routing and safe provider context
+services/aiProviders/openCodeZenProvider.js  OpenCode Zen adapter
+middleware/csrf.js                    Session-backed mutation protection
+```
 
 ```text
 server.js                           Runtime entry point: database, sessions, admin setup, listener
@@ -44,13 +62,28 @@ ADMIN_PASSWORD=choose-a-strong-password
 NODE_ENV=development
 ```
 
-3. Seed the sample catalog:
+3. Prepare existing catalog records and seed clone data:
 
 ```powershell
+npm run catalog:migrate
 npm run seed
 ```
 
-4. Run tests and start the app:
+4. Configure OpenCode Zen in `.env` using the variables in `.env.example`, then verify the provider without printing the key:
+
+```powershell
+npm run ai:smoke
+```
+
+5. Index internal demo policies after policy documents change:
+
+```powershell
+npm run policies:index
+```
+
+For Atlas Vector Search, create a `knowledge_chunks` index named by `POLICY_VECTOR_INDEX_NAME` with vector path `embedding`, dimensions `512`, and cosine similarity. If the index is unavailable, the application uses in-memory cosine fallback.
+
+6. Run tests and start the app:
 
 ```powershell
 npm test

@@ -14,6 +14,13 @@ const { createCommentController } = require("./controllers/commentController");
 const { createCartRoutes } = require("./routes/cartRoutes");
 const { createCheckoutRoutes } = require("./routes/checkoutRoutes");
 const { createCommentRoutes } = require("./routes/commentRoutes");
+const { createChatbotController } = require("./controllers/chatbotController");
+const { createChatbotRoutes } = require("./routes/chatbotRoutes");
+const { createRateLimiter } = require("./middleware/rateLimit");
+const { createPolicyService } = require("./services/policyService");
+const { createChatbotService } = require("./services/chatbotService");
+const { createOpenCodeZenProvider } = require("./services/aiProviders/openCodeZenProvider");
+const KnowledgeChunk = require("./models/KnowledgeChunk");
 const { createCsrfMiddleware } = require("./middleware/csrf");
 const { configurePassport } = require("./config/passport");
 const { requireAuth, requireAdmin } = require("./middleware/auth");
@@ -28,7 +35,7 @@ const { createCatalogRoutes } = require("./routes/catalogRoutes");
 const { createAdminRoutes } = require("./routes/adminRoutes");
 const { createRecommendationRoutes } = require("./routes/recommendationRoutes");
 
-function createApp({ sessionStore, recommendationClient = createRecommendationClient({ Book }) } = {}) {
+function createApp({ sessionStore, recommendationClient = createRecommendationClient({ Book }), chatbotService } = {}) {
   const app = express();
   app.set("trust proxy", 1);
   app.set("view engine", "ejs");
@@ -64,6 +71,10 @@ function createApp({ sessionStore, recommendationClient = createRecommendationCl
   const cartController = createCartController({ Book });
   const checkoutController = createCheckoutController({ Book });
   const commentController = createCommentController({ Book, Comment });
+  const policyService = createPolicyService({ KnowledgeChunk, embeddingClient: recommendationClient });
+  const resolvedChatbotService = chatbotService || createChatbotService({ policyService, recommendationClient, provider: createOpenCodeZenProvider(), Book });
+  const chatbotController = createChatbotController({ chatbotService: resolvedChatbotService });
+  const chatbotLimiter = createRateLimiter({ max: Number(process.env.AI_RATE_LIMIT || 20) });
 
   app.use(createAuthRoutes({ controller: authController, passport, renderForm, showValidation, csrf: csrf.requireToken }));
   app.use(createCatalogRoutes({ controller: catalogController }));
@@ -72,6 +83,7 @@ function createApp({ sessionStore, recommendationClient = createRecommendationCl
   app.use(createCommentRoutes({ controller: commentController, requireAuth, csrf: csrf.requireToken }));
   app.use(createAdminRoutes({ controller: adminController, requireAuth, requireAdmin, showValidation, csrf: csrf.requireToken }));
   app.use(createRecommendationRoutes({ controller: recommendationController, requireAuth, validationResult }));
+  app.use(createChatbotRoutes({ controller: chatbotController, limiter: chatbotLimiter }));
 
   app.use((req, res) => res.status(404).render("error", { status: 404, message: "The page you requested was not found." }));
   app.use((error, req, res, next) => {
