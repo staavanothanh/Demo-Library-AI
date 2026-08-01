@@ -3,7 +3,7 @@ function createAuthController({ User, bcrypt }) {
     register: async (req, res, next) => {
       try {
         const username = req.body.username.trim().toLowerCase();
-        if (await User.exists({ username })) return res.status(409).render("register", { errors: [{ msg: "That username is already in use." }], values: req.body });
+        if (await User.exists({ username })) return res.status(409).render("register", { errors: [{ msg: "That username is already in use." }], values: { username } });
         await User.create({ username, passwordHash: await bcrypt.hash(req.body.password, 12), role: "member" });
         return res.redirect("/login?message=Registration successful. Please sign in.");
       } catch (error) { return next(error); }

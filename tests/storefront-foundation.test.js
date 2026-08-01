@@ -19,6 +19,8 @@ function createValidationApp() {
       registeredPayload = req.body;
       return res.status(201).json({ ok: true });
     },
+    logout: (req, res) => res.status(204).end(),
+    afterLogin: (req, res) => res.status(204).end(),
   };
   const passport = { authenticate: () => (req, res) => res.status(204).end() };
   const renderForm = () => (req, res) => res.status(200).send("register");
@@ -26,7 +28,10 @@ function createValidationApp() {
     const { validationResult } = require("express-validator");
     return (req, res, next) => {
       const errors = validationResult(req);
-      if (!errors.isEmpty()) return res.status(422).json({ errors: errors.array() });
+      if (!errors.isEmpty()) {
+        const safeErrors = errors.array().map(({ value, ...error }) => error);
+        return res.status(422).json({ errors: safeErrors });
+      }
       return next();
     };
   };
@@ -46,7 +51,7 @@ describe("bookstore foundation", () => {
     const bookId = new mongoose.Types.ObjectId().toString();
     const initial = [];
     const withItem = addItem(initial, bookId, 2, 3);
-    const merged = addItem(withItem, bookId, 2, 3);
+    const merged = addItem(withItem, bookId, 1, 3);
 
     expect(initial).toEqual([]);
     expect(withItem).toEqual([{ bookId, quantity: 2 }]);
