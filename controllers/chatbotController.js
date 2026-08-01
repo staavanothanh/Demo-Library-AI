@@ -13,7 +13,16 @@ function createChatbotController({ chatbotService }) {
         return res.json({ answer: result.answer, intent: result.intent, sources: result.sources || [], books: result.books || [] });
       } catch (error) {
         console.error(`Chatbot request failed: ${error.code || "INTERNAL"}`);
-        return res.status(error.code === "NOT_CONFIGURED" || error.code === "UPSTREAM_UNAVAILABLE" ? 503 : 500).json({ error: "The bookstore assistant is temporarily unavailable." });
+        const statusByCode = {
+          NOT_CONFIGURED: 503,
+          UPSTREAM_UNAVAILABLE: 503,
+          TIMEOUT: 504,
+          RATE_LIMITED: 429,
+          AUTH_FAILED: 502,
+          INVALID_RESPONSE: 502,
+          UPSTREAM_ERROR: 502,
+        };
+        return res.status(statusByCode[error.code] || 500).json({ error: "The bookstore assistant is temporarily unavailable." });
       }
     },
   };

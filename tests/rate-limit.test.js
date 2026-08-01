@@ -14,4 +14,9 @@ describe("chatbot rate limiting", () => {
     expect(first.status).toBe(200);
     expect(second.status).toBe(429);
   });
+
+  it("rejects invalid limiter settings", () => {
+    expect(() => createRateLimiter({ max: Number.NaN })).toThrow("Rate-limit max");
+    expect(() => createRateLimiter({ maxEntries: 0 })).toThrow("Rate-limit entry");
+  });
 });

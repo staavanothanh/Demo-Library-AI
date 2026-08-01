@@ -20,7 +20,7 @@ async function indexPolicies() {
   const recommendationClient = createRecommendationClient({ Book });
   const files = await readPolicyFiles();
   const result = await indexPolicyDocuments({ files, KnowledgeChunk, embeddingClient: recommendationClient });
-  console.log(`Indexed ${result.indexed} policy chunks.`);
+  console.log(`Indexed ${result.indexed} policy chunks and removed ${result.deleted || 0} stale chunks.`);
   await recommendationClient.stop();
   await mongoose.disconnect();
 }

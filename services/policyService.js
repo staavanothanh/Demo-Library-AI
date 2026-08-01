@@ -11,6 +11,50 @@ function cosineSimilarity(left, right) {
   return leftNorm && rightNorm ? dot / (Math.sqrt(leftNorm) * Math.sqrt(rightNorm)) : 0;
 }
 
+function createAtlasVectorSearch({
+  KnowledgeChunk,
+  indexName = process.env.POLICY_VECTOR_INDEX_NAME || "policy_chunks_vector",
+  numCandidates = Number(process.env.POLICY_VECTOR_NUM_CANDIDATES || 50),
+  limit = 5,
+} = {}) {
+  const safeLimit = Number.isInteger(limit) && limit > 0 ? limit : 5;
+  const safeCandidates = Number.isInteger(numCandidates) && numCandidates >= safeLimit
+    ? numCandidates
+    : Math.max(safeLimit, 50);
+
+  return async (queryVector) => {
+    if (!Array.isArray(queryVector) || !queryVector.length) return [];
+    if (!KnowledgeChunk || typeof KnowledgeChunk.aggregate !== "function") {
+      throw new Error("KnowledgeChunk vector search is unavailable.");
+    }
+
+    const query = KnowledgeChunk.aggregate([
+      {
+        $vectorSearch: {
+          index: String(indexName),
+          path: "embedding",
+          queryVector,
+          numCandidates: safeCandidates,
+          limit: safeLimit,
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          source: 1,
+          category: 1,
+          title: 1,
+          content: 1,
+          chunkIndex: 1,
+          contentHash: 1,
+          score: { $meta: "vectorSearchScore" },
+        },
+      },
+    ]);
+    return typeof query.exec === "function" ? query.exec() : query;
+  };
+}
+
 function createPolicyService({ KnowledgeChunk, embeddingClient, threshold = 0.72, vectorSearch } = {}) {
   let cachedChunks;
 
@@ -24,7 +68,9 @@ function createPolicyService({ KnowledgeChunk, embeddingClient, threshold = 0.72
     try {
       if (vectorSearch) {
         const vectorResults = await vectorSearch(embedding);
-        const chunks = vectorResults.filter((chunk) => Number(chunk.score) >= threshold);
+        const chunks = (Array.isArray(vectorResults) ? vectorResults : [])
+          .filter((chunk) => Number(chunk.score) >= threshold)
+          .slice(0, 5);
         if (chunks.length) return { chunks, fallback: false, refused: false };
       }
     } catch (error) {
@@ -41,4 +87,4 @@ function createPolicyService({ KnowledgeChunk, embeddingClient, threshold = 0.72
   return { retrieve, cosineSimilarity };
 }
 
-module.exports = { createPolicyService, cosineSimilarity };
+module.exports = { createPolicyService, createAtlasVectorSearch, cosineSimilarity };
