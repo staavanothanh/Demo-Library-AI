@@ -1,15 +1,5 @@
 <%- include("partials/header") %>
-  <section class="page-heading product-heading">
-    <p class="eyebrow">
-      <%= book.genre || "BOOK" %>
-    </p>
-    <h1>
-      <%= book.title %>
-    </h1>
-    <p class="author">By <%= book.authors %>
-    </p>
-  </section>
-  <section class="form-card wide product-detail">
+  <section class="form-card wide product-detail product-card">
     <div class="product-media">
       <% if (book.coverUrl) { %><img class="product-cover" src="<%= book.coverUrl %>" alt="Cover of <%= book.title %>">
         <% } else { %>
@@ -17,34 +7,57 @@
           <% } %>
     </div>
     <div class="product-copy">
+      <div class="product-meta">
+        <p class="eyebrow">
+          <%= book.genre || "BOOK" %>
+        </p>
+        <h1>
+          <%= book.title %>
+        </h1>
+        <p class="author">By <%= book.authors %>
+        </p>
+      </div>
+      <p class="product-kicker">A considered addition to your shelves</p>
       <p class="product-description">
         <%= book.description || "No description available." %>
       </p>
-      <p class="price">
-        <%= formatCurrency(book.price) %>
-      </p>
-      <p class="stock">
-        <%= book.stock> 0 ? `${book.stock} available` : "Currently out of stock" %>
-      </p>
-      <% if (book.stock> 0) { %><form class="inline-form" action="/cart/items" method="post"><input type="hidden"
-            name="_csrf" value="<%= csrfToken %>"><input type="hidden" name="bookId" value="<%= book._id %>">
-          <div class="field"><label for="quantity">Quantity</label><input id="quantity" name="quantity" type="number"
-              min="1" max="<%= book.stock %>" value="1" required></div><button class="button" type="submit">Add to
-            cart</button>
-        </form>
-        <% } %>
+      <div class="product-purchase">
+        <div class="pricing-block">
+          <p class="price">
+            <%= formatCurrency(book.price) %>
+          </p>
+          <p class="stock">
+            <%= book.stock> 0 ? `${book.stock} available` : "Currently out of stock" %>
+          </p>
+        </div>
+        <% if (book.stock> 0) { %><form class="inline-form purchase-form" action="/cart/items" method="post"><input
+              type="hidden" name="_csrf" value="<%= csrfToken %>"><input type="hidden" name="bookId"
+              value="<%= book._id %>">
+            <div class="field quantity-field"><label for="quantity">Quantity</label><input id="quantity" name="quantity"
+                type="number" min="1" max="<%= book.stock %>" value="1" required></div><button class="button"
+              type="submit">Add to
+              cart</button>
+          </form>
+          <% } %>
+      </div>
     </div>
   </section>
-  <section class="form-card wide comments-section">
+  <section class="form-card wide comments-section comments-card">
     <div class="section-heading">
       <p class="eyebrow">FROM THE COMMUNITY</p>
-      <h2>Customer comments</h2>
+      <div class="section-heading-row">
+        <h2>Customer comments</h2>
+        <span class="comments-count">
+          <%= comments.length %>
+            <%= comments.length===1 ? "comment" : "comments" %>
+        </span>
+      </div>
     </div>
     <% if (!comments.length) { %>
       <p class="muted">No comments yet. Be the first to share a thought.</p>
       <% } %>
         <div class="comments-list">
-          <% comments.forEach((comment)=> { %><article class="comment"><strong>
+          <% comments.forEach((comment)=> { %><article class="comment"><strong class="comment-author">
                 <%= comment.userId?.username || "Member" %>
               </strong>
               <p>
@@ -54,14 +67,17 @@
             <% }) %>
         </div>
         <% if (user) { %>
-          <form action="/books/<%= book._id %>/comments" method="post"><input type="hidden" name="_csrf"
-              value="<%= csrfToken %>">
+          <form class="comment-composer" action="/books/<%= book._id %>/comments" method="post"><input type="hidden"
+              name="_csrf" value="<%= csrfToken %>">
             <div class="field"><label for="comment-body">Leave a comment</label><textarea id="comment-body" name="body"
-                rows="4" maxlength="1000" required></textarea></div><button class="button" type="submit">Post
+                rows="5" maxlength="1000" aria-describedby="comment-body-help"
+                placeholder="Share what stayed with you..." required></textarea>
+              <p id="comment-body-help" class="form-help">Keep it thoughtful and under 1,000 characters.</p>
+            </div><button class="button comment-submit" type="submit">Post
               comment</button>
           </form>
           <% } else { %>
-            <p><a href="/login">Sign in</a> to leave a comment.</p>
+            <p class="comment-sign-in"><a href="/login">Sign in</a> to leave a comment.</p>
             <% } %>
   </section>
   <%- include("partials/footer") %>
