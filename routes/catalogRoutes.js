@@ -5,6 +5,7 @@ function createCatalogRoutes({ controller }) {
   router.get("/", controller.home);
   router.get("/books", controller.listBooks);
   router.get("/booklist", controller.listBooks);
+  router.get("/books/:id", controller.showBook);
   return router;
 }
 
