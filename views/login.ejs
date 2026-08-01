@@ -1,11 +1,14 @@
 <%- include("partials/header") %>
-    <section class="form-card">
+    <section class="form-card auth-card">
         <p class="eyebrow">WELCOME BACK</p>
-        <h1>Sign in to your library</h1>
-        <%- include("partials/errors", { errors }) %>
-            <form method="post" action="/login"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><label>Username<input name="username"
-                        required></label><label>Password<input type="password" name="password" required></label><button
-                    class="button" type="submit">Sign in</button></form>
-            <p>Need an account? <a href="/register">Register now</a>.</p>
+        <h1>Sign in to your library</h1><%- include("partials/errors", { errors }) %>
+            <form method="post" action="/login"><input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <div class="field"><label for="username">Username</label><input id="username" name="username"
+                        autocomplete="username" required></div>
+                <div class="field"><label for="password">Password</label><input id="password" type="password"
+                        name="password" autocomplete="current-password" required></div><button class="button"
+                    type="submit">Sign in</button>
+            </form>
+            <p class="form-note">Need an account? <a href="/register">Register now</a>.</p>
     </section>
     <%- include("partials/footer") %>

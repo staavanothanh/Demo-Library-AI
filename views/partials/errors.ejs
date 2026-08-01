@@ -1,8 +1,11 @@
 <% if (errors?.length) { %>
-    <div class="errors">
-        <% errors.forEach((error)=> { %><p>
-                <%= error.msg %>
-            </p>
-            <% }) %>
-    </div>
-    <% } %>
+  <div class="errors" role="alert" aria-live="assertive">
+    <p class="errors-title">Please check the following:</p>
+    <ul>
+      <% errors.forEach((error)=> { %><li>
+          <%= error.msg %>
+        </li>
+        <% }) %>
+    </ul>
+  </div>
+  <% } %>

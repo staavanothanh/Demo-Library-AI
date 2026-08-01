@@ -1,12 +1,19 @@
-<button class="chat-launcher" type="button" aria-controls="chat-panel" aria-expanded="false" data-chat-toggle>Chat</button>
-<section class="chat-panel" id="chat-panel" hidden data-chat-panel>
-  <div class="chat-panel-header"><strong>Leaf & Logic assistant</strong><button type="button" data-chat-close aria-label="Close chat">×</button></div>
-  <p class="chat-notice">Demo assistant. Do not send passwords, payment details, or confidential information.</p>
-  <div class="chat-messages" data-chat-messages aria-live="polite"></div>
+<button class="chat-launcher" type="button" aria-controls="chat-panel" aria-expanded="false"
+  aria-label="Open bookstore assistant" data-chat-toggle>Ask the assistant</button>
+<section class="chat-panel" id="chat-panel" hidden data-chat-panel role="dialog" aria-modal="false"
+  aria-labelledby="chat-title">
+  <div class="chat-panel-header">
+    <h2 id="chat-title">Bookstore assistant</h2>
+    <button class="chat-close" type="button" data-chat-close aria-label="Close bookstore assistant">×</button>
+  </div>
+  <p class="chat-notice">A demo assistant for books and store policies. Please do not share passwords or payment
+    details.</p>
+  <div class="chat-messages" data-chat-messages aria-live="polite" aria-atomic="false"></div>
   <form class="chat-form" data-chat-form>
     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
     <label class="sr-only" for="chat-message">Message</label>
-    <input id="chat-message" name="message" maxlength="2000" placeholder="Ask about books or store policies" required>
+    <input id="chat-message" name="message" maxlength="2000" autocomplete="off"
+      placeholder="Ask about books or store policies" required>
     <button class="button" type="submit">Send</button>
   </form>
 </section>

@@ -1,37 +1,65 @@
 <%- include("partials/header") %>
-<section class="page-heading">
+  <section class="page-heading">
     <p class="eyebrow">THE COLLECTION</p>
     <h1>Find your next book</h1>
     <p>Search the catalog by title, author, or genre.</p>
-</section>
-<form class="search-form" action="/books" method="get">
-    <input name="q" value="<%= query %>" maxlength="120" placeholder="Search title, author, or genre">
-    <select name="sort" aria-label="Sort books">
-        <option value="title" <%= filters.sort === "title" ? "selected" : "" %>>Title</option>
-        <option value="price-asc" <%= filters.sort === "price-asc" ? "selected" : "" %>>Price: low to high</option>
-        <option value="price-desc" <%= filters.sort === "price-desc" ? "selected" : "" %>>Price: high to low</option>
-        <option value="rating" <%= filters.sort === "rating" ? "selected" : "" %>>Rating</option>
-    </select>
-    <button class="button" type="submit">Search</button>
-</form>
-<p class="muted"><%= totalBooks %> books · page <%= currentPage %> of <%= totalPages %></p>
-<section class="book-grid">
+  </section>
+  <form class="search-form" action="/books" method="get" role="search">
+    <div class="field"><label for="catalog-query">Search the collection</label><input id="catalog-query" name="q"
+        value="<%= query %>" maxlength="120" placeholder="Title, author, or genre"></div>
+    <div class="field"><label for="catalog-sort">Sort by</label><select id="catalog-sort" name="sort">
+        <option value="title" <%=filters.sort==="title" ? "selected" : "" %>>Title</option>
+        <option value="price-asc" <%=filters.sort==="price-asc" ? "selected" : "" %>>Price: low to high</option>
+        <option value="price-desc" <%=filters.sort==="price-desc" ? "selected" : "" %>>Price: high to low</option>
+        <option value="rating" <%=filters.sort==="rating" ? "selected" : "" %>>Rating</option>
+      </select></div>
+    <button class="button" type="submit">Search books</button>
+  </form>
+  <div class="catalog-meta">
+    <p class="muted"><strong>
+        <%= totalBooks %>
+      </strong> books <span aria-hidden="true">·</span> page <%= currentPage %> of <%= totalPages %>
+    </p>
+  </div>
+  <section class="book-grid" aria-label="Book collection">
     <% books.forEach((book)=> { %><article class="book-card">
-        <% if (book.coverUrl) { %><img class="book-cover" src="<%= book.coverUrl %>" alt="Cover of <%= book.title %>"><% } else { %><div class="book-cover placeholder" aria-hidden="true">No cover</div><% } %>
-        <p class="tag"><%= book.genre || "Book" %></p>
-        <h2><a href="/books/<%= book._id %>"><%= book.title %></a></h2>
-        <p class="author"><%= book.authors %></p>
-        <p><strong><%= formatCurrency(book.price) %></strong> · <%= book.averageRating || "—" %>/5</p>
-        <p><%= book.stock > 0 ? `${book.stock} in stock` : "Out of stock" %></p>
-        <a class="button" href="/books/<%= book._id %>">View details</a>
-    </article><% }) %>
-</section>
-<% if (!books.length) { %><p class="empty">No books matched your search. Try a different phrase.</p><% } %>
-<% if (totalPages > 1) { %>
-<nav class="pagination" aria-label="Book pages">
-    <% for (let page = 1; page <= totalPages; page += 1) { %>
-        <a href="/books?page=<%= page %>&limit=<%= pageSize %>&q=<%= encodeURIComponent(query) %>&sort=<%= filters.sort %>" <%= page === currentPage ? "aria-current=page" : "" %>><%= page %></a>
+        <a class="book-card-media" href="/books/<%= book._id %>" aria-label="View <%= book.title %>">
+          <% if (book.coverUrl) { %><img class="book-cover" src="<%= book.coverUrl %>" alt="Cover of <%= book.title %>"
+              loading="lazy">
+            <% } else { %>
+              <div class="book-cover placeholder" aria-hidden="true">No cover</div>
+              <% } %>
+        </a>
+        <div class="book-card-body">
+          <p class="tag">
+            <%= book.genre || "Book" %>
+          </p>
+          <h2><a href="/books/<%= book._id %>">
+              <%= book.title %>
+            </a></h2>
+          <p class="author">
+            <%= book.authors %>
+          </p>
+          <p class="book-price"><strong>
+              <%= formatCurrency(book.price) %>
+            </strong> <span aria-hidden="true">·</span>
+            <%= book.averageRating || "—" %>/5
+          </p>
+          <p class="stock">
+            <%= book.stock> 0 ? `${book.stock} in stock` : "Out of stock" %>
+          </p><a class="text-link" href="/books/<%= book._id %>">View details <span aria-hidden="true">→</span></a>
+        </div>
+      </article>
+      <% }) %>
+  </section>
+  <% if (!books.length) { %>
+    <p class="empty" role="status">No books matched your search. Try a different phrase.</p>
     <% } %>
-</nav>
-<% } %>
-<%- include("partials/footer") %>
+      <% if (totalPages> 1) { %><nav class="pagination" aria-label="Book pages">
+          <% for (let page=1; page <=totalPages; page +=1) { %><a
+              href="/books?page=<%= page %>&limit=<%= pageSize %>&q=<%= encodeURIComponent(query) %>&sort=<%= filters.sort %>"
+              <%=page===currentPage ? "aria-current=page" : "" %>><%= page %></a>
+            <% } %>
+        </nav>
+        <% } %>
+          <%- include("partials/footer") %>

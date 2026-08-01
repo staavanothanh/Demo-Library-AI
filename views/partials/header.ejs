@@ -4,27 +4,31 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Leaf & Logic Books — a considered collection for curious readers.">
   <title>Leaf & Logic Books</title>
   <link rel="stylesheet" href="/css/style.css">
 </head>
 
 <body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
   <header class="site-header">
-    <a class="brand" href="/">Leaf <span>&</span> Logic Books</a>
-    <nav>
+    <a class="brand" href="/" aria-label="Leaf and Logic Books home">Leaf <span>&amp;</span> Logic</a>
+    <nav class="site-nav" aria-label="Primary navigation">
       <a href="/books">Books</a>
-      <a href="/cart">Cart (<%= cartCount || 0 %>)</a>
+      <a href="/cart">Cart <span class="cart-count">(<%= cartCount || 0 %>)</span></a>
       <% if (user) { %>
-        <% if (user.role === "admin") { %><a href="/admin-dashboard">Add book</a><% } %>
-        <form action="/logout" method="post"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="link-button">Log out</button></form>
-      <% } else { %>
-        <a href="/login">Sign in</a><a class="nav-button" href="/register">Create account</a>
-      <% } %>
+        <% if (user.role==="admin" ) { %><a href="/admin-dashboard">Add book</a>
+          <% } %>
+            <form action="/logout" method="post"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button
+                class="link-button" type="submit">Log out</button></form>
+            <% } else { %>
+              <a href="/login">Sign in</a><a href="/register">Create account</a>
+              <% } %>
     </nav>
   </header>
-  <main>
+  <main id="main-content">
     <% if (message) { %>
-      <p class="notice">
+      <p class="notice" role="status">
         <%= message %>
       </p>
       <% } %>

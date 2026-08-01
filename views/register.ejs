@@ -1,16 +1,17 @@
 <%- include("partials/header") %>
-    <section class="form-card">
+    <section class="form-card auth-card">
         <p class="eyebrow">MEMBER ACCESS</p>
-        <h1>Create your library account</h1>
-        <%- include("partials/errors", { errors }) %>
-            <form method="post" action="/register">
-                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                <label>Username<input name="username" value="<%= values.username || "" %>" minlength="3" maxlength="30"
-                        required></label>
-                <label>Password<input type="password" name="password" minlength="8" required></label>
-                <label>Confirm password<input type="password" name="confirmPassword" minlength="8" required></label>
+        <h1>Create your library account</h1><%- include("partials/errors", { errors }) %>
+            <form method="post" action="/register"><input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <div class="field"><label for="username">Username</label><input id="username" name="username"
+                        value="<%= values.username || "" %>" minlength="3" maxlength="30" autocomplete="username"
+                        required></div>
+                <div class="field"><label for="password">Password</label><input id="password" type="password"
+                        name="password" minlength="8" autocomplete="new-password" required></div>
+                <div class="field"><label for="confirm-password">Confirm password</label><input id="confirm-password"
+                        type="password" name="confirmPassword" minlength="8" autocomplete="new-password" required></div>
                 <button class="button" type="submit">Create account</button>
             </form>
-            <p>Already registered? <a href="/login">Sign in</a>.</p>
+            <p class="form-note">Already registered? <a href="/login">Sign in</a>.</p>
     </section>
     <%- include("partials/footer") %>
