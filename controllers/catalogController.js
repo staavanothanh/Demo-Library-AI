@@ -34,7 +34,7 @@ function buildCatalogFilter(query = "", genre = "") {
   return filter;
 }
 
-function createCatalogController({ Book }) {
+function createCatalogController({ Book, Comment }) {
   return {
     home: (req, res) => res.render("home"),
     listBooks: async (req, res, next) => {
@@ -53,7 +53,8 @@ function createCatalogController({ Book }) {
       try {
         const book = await Book.findById(req.params.id).lean();
         if (!book) return res.status(404).render("error", { status: 404, message: "The book you requested was not found." });
-        return res.render("book-detail", { book, comments: [] });
+        const comments = Comment ? await Comment.find({ bookId: req.params.id }).sort({ createdAt: -1 }).populate("userId", "username").lean() : [];
+        return res.render("book-detail", { book, comments });
       } catch (error) { return next(error); }
     },
   };

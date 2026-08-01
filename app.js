@@ -6,6 +6,14 @@ const bcrypt = require("bcrypt");
 const helmet = require("helmet");
 const User = require("./models/User");
 const Book = require("./models/Book");
+const Comment = require("./models/Comment");
+const { getCartCount } = require("./services/cartService");
+const { createCartController } = require("./controllers/cartController");
+const { createCheckoutController } = require("./controllers/checkoutController");
+const { createCommentController } = require("./controllers/commentController");
+const { createCartRoutes } = require("./routes/cartRoutes");
+const { createCheckoutRoutes } = require("./routes/checkoutRoutes");
+const { createCommentRoutes } = require("./routes/commentRoutes");
 const { configurePassport } = require("./config/passport");
 const { requireAuth, requireAdmin } = require("./middleware/auth");
 const { renderForm, showValidation, validationResult } = require("./middleware/validation");
@@ -38,15 +46,27 @@ function createApp({ sessionStore, recommendationClient = createRecommendationCl
   configurePassport(passport, { User, bcrypt });
   app.use(passport.initialize());
   app.use(passport.session());
-  app.use((req, res, next) => { res.locals.user = req.user; res.locals.message = req.query.message; next(); });
+  app.use((req, res, next) => {
+    res.locals.user = req.user;
+    res.locals.message = req.query.message;
+    res.locals.cartCount = getCartCount(req.session.cart || []);
+    res.locals.formatCurrency = (value) => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(Number(value) || 0);
+    next();
+  });
 
   const authController = createAuthController({ User, bcrypt });
-  const catalogController = createCatalogController({ Book });
+  const catalogController = createCatalogController({ Book, Comment });
   const adminController = createAdminController({ Book, recommendationClient });
   const recommendationController = createRecommendationController({ recommendationClient });
+  const cartController = createCartController({ Book });
+  const checkoutController = createCheckoutController({ Book });
+  const commentController = createCommentController({ Book, Comment });
 
   app.use(createAuthRoutes({ controller: authController, passport, renderForm, showValidation }));
   app.use(createCatalogRoutes({ controller: catalogController }));
+  app.use(createCartRoutes({ controller: cartController }));
+  app.use(createCheckoutRoutes({ controller: checkoutController }));
+  app.use(createCommentRoutes({ controller: commentController, requireAuth }));
   app.use(createAdminRoutes({ controller: adminController, requireAuth, requireAdmin, showValidation }));
   app.use(createRecommendationRoutes({ controller: recommendationController, requireAuth, validationResult }));
 

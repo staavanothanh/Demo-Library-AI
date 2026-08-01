@@ -1,0 +1,48 @@
+<%- include("partials/header") %>
+<section class="page-heading">
+  <p class="eyebrow"><%= book.genre || "BOOK" %></p>
+  <h1><%= book.title %></h1>
+  <p class="author">By <%= book.authors %></p>
+</section>
+
+<section class="form-card wide product-detail">
+  <% if (book.coverUrl) { %>
+    <img class="product-cover" src="<%= book.coverUrl %>" alt="Cover of <%= book.title %>">
+  <% } else { %>
+    <div class="product-cover placeholder" aria-hidden="true">No cover</div>
+  <% } %>
+  <div>
+    <p><%= book.description || "No description available." %></p>
+    <p class="price"><%= formatCurrency(book.price) %></p>
+    <p><%= book.stock > 0 ? `${book.stock} available` : "Currently out of stock" %></p>
+    <% if (book.stock > 0) { %>
+      <form action="/cart/items" method="post">
+        <input type="hidden" name="bookId" value="<%= book._id %>">
+        <label for="quantity">Quantity</label>
+        <input id="quantity" name="quantity" type="number" min="1" max="<%= book.stock %>" value="1" required>
+        <button class="button" type="submit">Add to cart</button>
+      </form>
+    <% } %>
+  </div>
+</section>
+
+<section class="form-card wide">
+  <h2>Customer comments</h2>
+  <% if (!comments.length) { %><p>No comments yet.</p><% } %>
+  <% comments.forEach((comment) => { %>
+    <article class="comment">
+      <strong><%= comment.userId?.username || "Member" %></strong>
+      <p><%= comment.body %></p>
+    </article>
+  <% }) %>
+  <% if (user) { %>
+    <form action="/books/<%= book._id %>/comments" method="post">
+      <label for="comment-body">Leave a comment</label>
+      <textarea id="comment-body" name="body" rows="4" maxlength="1000" required></textarea>
+      <button class="button" type="submit">Post comment</button>
+    </form>
+  <% } else { %>
+    <p><a href="/login">Sign in</a> to leave a comment.</p>
+  <% } %>
+</section>
+<%- include("partials/footer") %>

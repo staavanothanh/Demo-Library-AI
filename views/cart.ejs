@@ -1,0 +1,31 @@
+<%- include("partials/header") %>
+<section class="page-heading">
+  <p class="eyebrow">YOUR CART</p>
+  <h1>Ready when you are.</h1>
+</section>
+
+<% if (!items.length) { %>
+  <section class="form-card wide"><p>Your cart is empty. <a href="/books">Browse books</a>.</p></section>
+<% } else { %>
+  <section class="form-card wide">
+    <% items.forEach((item) => { %>
+      <article class="cart-row">
+        <div>
+          <h2><%= item.book.title %></h2>
+          <p><%= formatCurrency(item.book.price) %> each</p>
+        </div>
+        <form action="/cart/items/<%= item.book._id %>/update" method="post">
+          <label for="quantity-<%= item.book._id %>">Quantity</label>
+          <input id="quantity-<%= item.book._id %>" name="quantity" type="number" min="1" max="<%= item.book.stock %>" value="<%= item.quantity %>" required>
+          <button class="button secondary" type="submit">Update</button>
+        </form>
+        <strong><%= formatCurrency(item.subtotalCents / 100) %></strong>
+        <form action="/cart/items/<%= item.book._id %>/remove" method="post"><button class="link-button" type="submit">Remove</button></form>
+      </article>
+    <% }) %>
+    <div class="cart-total"><strong>Total</strong><strong><%= formatCurrency(total) %></strong></div>
+    <form action="/checkout" method="post"><button class="button" type="submit">Demo checkout</button></form>
+    <form action="/cart/clear" method="post"><button class="button secondary" type="submit">Clear cart</button></form>
+  </section>
+<% } %>
+<%- include("partials/footer") %>

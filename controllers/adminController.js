@@ -4,7 +4,18 @@ function createAdminController({ Book, recommendationClient }) {
     showDashboard: (req, res) => res.render("admin-dashboard", { errors: [], values: {} }),
     addBook: async (req, res, next) => {
       try {
-        await Book.create({ title: req.body.title.trim(), authors: req.body.authors.trim(), description: req.body.description.trim(), genre: req.body.genre?.trim(), publisher: req.body.publisher?.trim(), publicationDate: req.body.publicationDate?.trim(), averageRating: Number(req.body.averageRating) || 0 });
+        await Book.create({
+          title: req.body.title.trim(),
+          authors: req.body.authors.trim(),
+          description: req.body.description.trim(),
+          genre: req.body.genre?.trim(),
+          publisher: req.body.publisher?.trim(),
+          publicationDate: req.body.publicationDate?.trim(),
+          averageRating: Number(req.body.averageRating) || 0,
+          price: Number(req.body.price),
+          stock: Number(req.body.stock),
+          coverUrl: req.body.coverUrl?.trim() || "",
+        });
         await recommendationClient.refreshBooks();
         return res.redirect("/admin-dashboard?message=Book added and AI index refreshed.");
       } catch (error) { return next(error); }
