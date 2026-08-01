@@ -1,9 +1,10 @@
 const express = require("express");
 
-function createCatalogRoutes({ controller, requireAuth }) {
+function createCatalogRoutes({ controller }) {
   const router = express.Router();
   router.get("/", controller.home);
-  router.get("/booklist", requireAuth, controller.listBooks);
+  router.get("/books", controller.listBooks);
+  router.get("/booklist", controller.listBooks);
   return router;
 }
 

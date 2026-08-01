@@ -46,7 +46,7 @@ function createApp({ sessionStore, recommendationClient = createRecommendationCl
   const recommendationController = createRecommendationController({ recommendationClient });
 
   app.use(createAuthRoutes({ controller: authController, passport, renderForm, showValidation }));
-  app.use(createCatalogRoutes({ controller: catalogController, requireAuth }));
+  app.use(createCatalogRoutes({ controller: catalogController }));
   app.use(createAdminRoutes({ controller: adminController, requireAuth, requireAdmin, showValidation }));
   app.use(createRecommendationRoutes({ controller: recommendationController, requireAuth, validationResult }));
 
