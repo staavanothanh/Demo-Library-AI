@@ -1,33 +1,38 @@
 <%- include("partials/header") %>
-    <section class="form-card wide admin-card">
-        <p class="eyebrow">ADMINISTRATION</p>
-        <h1>Add a book to the collection</h1>
-        <p>New books refresh the semantic recommendation index automatically.</p><%- include("partials/errors", { errors
-            }) %>
-            <form method="post" action="/admin-dashboard/add-book"><input type="hidden" name="_csrf"
-                    value="<%= csrfToken %>">
-                <div class="field"><label for="title">Title</label><input id="title" name="title"
-                        value="<%= values.title || "" %>" required></div>
-                <div class="field"><label for="authors">Authors</label><input id="authors" name="authors"
-                        value="<%= values.authors || "" %>" required></div>
-                <div class="field"><label for="genre">Genre</label><input id="genre" name="genre"
-                        value="<%= values.genre || "" %>"></div>
-                <div class="field"><label for="publisher">Publisher</label><input id="publisher" name="publisher"
-                        value="<%= values.publisher || "" %>"></div>
-                <div class="field"><label for="publication-date">Publication date</label><input id="publication-date"
-                        name="publicationDate" value="<%= values.publicationDate || "" %>" placeholder="2024"></div>
-                <div class="field"><label for="average-rating">Average rating</label><input id="average-rating"
-                        name="averageRating" type="number" min="0" max="5" step="0.1"
-                        value="<%= values.averageRating || "" %>"></div>
-                <div class="field"><label for="price">Price (USD)</label><input id="price" name="price" type="number"
-                        min="0" step="0.01" value="<%= values.price || "" %>" required></div>
-                <div class="field"><label for="stock">Stock</label><input id="stock" name="stock" type="number" min="0"
-                        step="1" value="<%= values.stock || "" %>" required></div>
-                <div class="field"><label for="cover-url">Cover URL</label><input id="cover-url" name="coverUrl"
-                        type="url" value="<%= values.coverUrl || "" %>" placeholder="https://..."></div>
-                <div class="field full"><label for="description">Description</label><textarea id="description"
-                        name="description" rows="5" required><%= values.description || "" %></textarea></div><button
-                    class="button" type="submit">Add book</button>
-            </form>
-    </section>
-    <%- include("partials/footer") %>
+        <section class="form-card wide admin-card">
+                <p class="eyebrow">ADMINISTRATION</p>
+                <h1>Add a book to the collection</h1>
+                <p>New books refresh the semantic recommendation index automatically.</p><%- include("partials/errors",
+                        { errors }) %>
+                        <form method="post" action="/admin-dashboard/add-book"><input type="hidden" name="_csrf"
+                                        value="<%= csrfToken %>">
+                                <div class="field"><label for="title">Title</label><input id="title" name="title"
+                                                value="<%= values.title || "" %>" required></div>
+                                <div class="field"><label for="authors">Authors</label><input id="authors"
+                                                name="authors" value="<%= values.authors || "" %>" required></div>
+                                <div class="field"><label for="genre">Genre</label><input id="genre" name="genre"
+                                                value="<%= values.genre || "" %>"></div>
+                                <div class="field"><label for="publisher">Publisher</label><input id="publisher"
+                                                name="publisher" value="<%= values.publisher || "" %>"></div>
+                                <div class="field"><label for="publication-date">Publication date</label><input
+                                                id="publication-date" name="publicationDate"
+                                                value="<%= values.publicationDate || "" %>" placeholder="2024"></div>
+                                <div class="field"><label for="average-rating">Average rating</label><input
+                                                id="average-rating" name="averageRating" type="number" min="0" max="5"
+                                                step="0.1" value="<%= values.averageRating || "" %>"></div>
+                                <div class="field"><label for="price">Price (USD)</label><input id="price" name="price"
+                                                type="number" min="0" step="0.01" value="<%= values.price || "" %>"
+                                                required></div>
+                                <div class="field"><label for="stock">Stock</label><input id="stock" name="stock"
+                                                type="number" min="0" step="1" value="<%= values.stock || "" %>"
+                                                required></div>
+                                <div class="field"><label for="cover-url">Cover URL</label><input id="cover-url"
+                                                name="coverUrl" type="url" value="<%= values.coverUrl || "" %>"
+                                                placeholder="https://..."></div>
+                                <div class="field full"><label for="description">Description</label><textarea
+                                                id="description" name="description" rows="5"
+                                                required><%= values.description || "" %></textarea></div><button
+                                        class="button" type="submit">Add book</button>
+                        </form>
+        </section>
+        <%- include("partials/footer") %>

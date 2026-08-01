@@ -22,7 +22,8 @@
                                     <%= formatCurrency(item.book.price) %> each
                                 </p>
                             </div>
-                            <form class="cart-update" action="/cart/items/<%= item.book._id %>/update" method="post" data-cart-mutation>
+                            <form class="cart-update" action="/cart/items/<%= item.book._id %>/update" method="post"
+                                data-cart-mutation>
                                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                                 <div class="field"><label for="quantity-<%= item.book._id %>">Quantity</label><input
                                         id="quantity-<%= item.book._id %>" name="quantity" type="number" min="1"
@@ -31,8 +32,8 @@
                             </form><strong class="cart-subtotal">
                                 <%= formatCurrency(item.subtotalCents / 100) %>
                             </strong>
-                            <form action="/cart/items/<%= item.book._id %>/remove" method="post" data-cart-mutation><input type="hidden"
-                                    name="_csrf" value="<%= csrfToken %>"><button class="link-button"
+                            <form action="/cart/items/<%= item.book._id %>/remove" method="post" data-cart-mutation>
+                                <input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="link-button"
                                     type="submit">Remove</button></form>
                         </article>
                         <% }) %>
