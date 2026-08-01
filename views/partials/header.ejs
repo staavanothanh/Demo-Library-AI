@@ -16,7 +16,7 @@
       <a href="/cart">Cart (<%= cartCount || 0 %>)</a>
       <% if (user) { %>
         <% if (user.role === "admin") { %><a href="/admin-dashboard">Add book</a><% } %>
-        <form action="/logout" method="post"><button class="link-button">Log out</button></form>
+        <form action="/logout" method="post"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="link-button">Log out</button></form>
       <% } else { %>
         <a href="/login">Sign in</a><a class="nav-button" href="/register">Create account</a>
       <% } %>

@@ -15,17 +15,18 @@
           <p><%= formatCurrency(item.book.price) %> each</p>
         </div>
         <form action="/cart/items/<%= item.book._id %>/update" method="post">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
           <label for="quantity-<%= item.book._id %>">Quantity</label>
           <input id="quantity-<%= item.book._id %>" name="quantity" type="number" min="1" max="<%= item.book.stock %>" value="<%= item.quantity %>" required>
           <button class="button secondary" type="submit">Update</button>
         </form>
         <strong><%= formatCurrency(item.subtotalCents / 100) %></strong>
-        <form action="/cart/items/<%= item.book._id %>/remove" method="post"><button class="link-button" type="submit">Remove</button></form>
+        <form action="/cart/items/<%= item.book._id %>/remove" method="post"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="link-button" type="submit">Remove</button></form>
       </article>
     <% }) %>
     <div class="cart-total"><strong>Total</strong><strong><%= formatCurrency(total) %></strong></div>
-    <form action="/checkout" method="post"><button class="button" type="submit">Demo checkout</button></form>
-    <form action="/cart/clear" method="post"><button class="button secondary" type="submit">Clear cart</button></form>
+    <form action="/checkout" method="post"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="button" type="submit">Demo checkout</button></form>
+    <form action="/cart/clear" method="post"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="button secondary" type="submit">Clear cart</button></form>
   </section>
 <% } %>
 <%- include("partials/footer") %>

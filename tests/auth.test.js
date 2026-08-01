@@ -42,10 +42,13 @@ describe("Library routes", () => {
   });
 
   it("keeps registration validation errors on the registration view", async () => {
-    const response = await request(app)
+    const agent = request.agent(app);
+    const form = await agent.get("/register");
+    const csrfToken = form.text.match(/name="_csrf" value="([^"]+)"/)?.[1];
+    const response = await agent
       .post("/register")
       .type("form")
-      .send({ username: "a", password: "short" });
+      .send({ username: "a", password: "short", _csrf: csrfToken });
 
     expect(response.status).toBe(422);
     expect(response.text).toContain("Username must be 3–30 characters.");

@@ -9,7 +9,10 @@
     "ratingsCount": 971,
     "textReviewsCount": 112,
     "publicationDate": "2020",
-    "publisher": "Packt"
+    "publisher": "Packt",
+    "price": 34.99,
+    "stock": 12,
+    "coverUrl": ""
   },
   {
     "bookID": 2,
@@ -21,7 +24,10 @@
     "ratingsCount": 1762,
     "textReviewsCount": 209,
     "publicationDate": "2024",
-    "publisher": "No Starch Press"
+    "publisher": "No Starch Press",
+    "price": 16.33,
+    "stock": 7,
+    "coverUrl": ""
   },
   {
     "bookID": 3,
@@ -33,7 +39,10 @@
     "ratingsCount": 2553,
     "textReviewsCount": 306,
     "publicationDate": "2019",
-    "publisher": "O'Reilly Media"
+    "publisher": "O'Reilly Media",
+    "price": 19.5,
+    "stock": 8,
+    "coverUrl": ""
   },
   {
     "bookID": 4,
@@ -45,7 +54,10 @@
     "ratingsCount": 3344,
     "textReviewsCount": 403,
     "publicationDate": "2017",
-    "publisher": "O'Reilly Media"
+    "publisher": "O'Reilly Media",
+    "price": 22.67,
+    "stock": 9,
+    "coverUrl": ""
   },
   {
     "bookID": 5,
@@ -57,7 +69,10 @@
     "ratingsCount": 4135,
     "textReviewsCount": 500,
     "publicationDate": "2022",
-    "publisher": "O'Reilly Media"
+    "publisher": "O'Reilly Media",
+    "price": 25.84,
+    "stock": 10,
+    "coverUrl": ""
   },
   {
     "bookID": 6,
@@ -69,7 +84,10 @@
     "ratingsCount": 4926,
     "textReviewsCount": 597,
     "publicationDate": "2020",
-    "publisher": "Independently published"
+    "publisher": "Independently published",
+    "price": 29.01,
+    "stock": 11,
+    "coverUrl": ""
   },
   {
     "bookID": 7,
@@ -81,7 +99,10 @@
     "ratingsCount": 5717,
     "textReviewsCount": 694,
     "publicationDate": "2019",
-    "publisher": "Addison-Wesley Professional"
+    "publisher": "Addison-Wesley Professional",
+    "price": 32.18,
+    "stock": 12,
+    "coverUrl": ""
   },
   {
     "bookID": 8,
@@ -93,7 +114,10 @@
     "ratingsCount": 6508,
     "textReviewsCount": 791,
     "publicationDate": "2008",
-    "publisher": "Prentice Hall"
+    "publisher": "Prentice Hall",
+    "price": 35.35,
+    "stock": 13,
+    "coverUrl": ""
   },
   {
     "bookID": 9,
@@ -105,7 +129,10 @@
     "ratingsCount": 7299,
     "textReviewsCount": 38,
     "publicationDate": "2023",
-    "publisher": "No Starch Press"
+    "publisher": "No Starch Press",
+    "price": 38.52,
+    "stock": 14,
+    "coverUrl": ""
   },
   {
     "bookID": 10,
@@ -117,7 +144,10 @@
     "ratingsCount": 8090,
     "textReviewsCount": 135,
     "publicationDate": "2023",
-    "publisher": "No Starch Press"
+    "publisher": "No Starch Press",
+    "price": 41.69,
+    "stock": 15,
+    "coverUrl": ""
   },
   {
     "bookID": 11,
@@ -129,7 +159,10 @@
     "ratingsCount": 8881,
     "textReviewsCount": 232,
     "publicationDate": "2018",
-    "publisher": "Addison-Wesley Professional"
+    "publisher": "Addison-Wesley Professional",
+    "price": 44.86,
+    "stock": 16,
+    "coverUrl": ""
   },
   {
     "bookID": 12,
@@ -141,7 +174,10 @@
     "ratingsCount": 9672,
     "textReviewsCount": 329,
     "publicationDate": "2004",
-    "publisher": "Microsoft Press"
+    "publisher": "Microsoft Press",
+    "price": 48.03,
+    "stock": 17,
+    "coverUrl": ""
   },
   {
     "bookID": 13,
@@ -153,7 +189,10 @@
     "ratingsCount": 963,
     "textReviewsCount": 426,
     "publicationDate": "1994",
-    "publisher": "Addison-Wesley Professional"
+    "publisher": "Addison-Wesley Professional",
+    "price": 11.2,
+    "stock": 18,
+    "coverUrl": ""
   },
   {
     "bookID": 14,
@@ -165,7 +204,10 @@
     "ratingsCount": 1754,
     "textReviewsCount": 523,
     "publicationDate": "1995",
-    "publisher": "Addison-Wesley Professional"
+    "publisher": "Addison-Wesley Professional",
+    "price": 14.37,
+    "stock": 19,
+    "coverUrl": ""
   },
   {
     "bookID": 15,
@@ -177,7 +219,10 @@
     "ratingsCount": 2545,
     "textReviewsCount": 620,
     "publicationDate": "2018",
-    "publisher": "IT Revolution Press"
+    "publisher": "IT Revolution Press",
+    "price": 17.54,
+    "stock": 20,
+    "coverUrl": ""
   },
   {
     "bookID": 16,
@@ -189,7 +234,10 @@
     "ratingsCount": 3336,
     "textReviewsCount": 717,
     "publicationDate": "2016",
-    "publisher": "MIT Press"
+    "publisher": "MIT Press",
+    "price": 20.71,
+    "stock": 5,
+    "coverUrl": ""
   },
   {
     "bookID": 17,
@@ -201,7 +249,10 @@
     "ratingsCount": 4127,
     "textReviewsCount": 814,
     "publicationDate": "2020",
-    "publisher": "Pearson"
+    "publisher": "Pearson",
+    "price": 23.88,
+    "stock": 6,
+    "coverUrl": ""
   },
   {
     "bookID": 18,
@@ -213,7 +264,10 @@
     "ratingsCount": 4918,
     "textReviewsCount": 61,
     "publicationDate": "2006",
-    "publisher": "Springer"
+    "publisher": "Springer",
+    "price": 27.05,
+    "stock": 7,
+    "coverUrl": ""
   },
   {
     "bookID": 19,
@@ -225,7 +279,10 @@
     "ratingsCount": 5709,
     "textReviewsCount": 158,
     "publicationDate": "2022",
-    "publisher": "O'Reilly Media"
+    "publisher": "O'Reilly Media",
+    "price": 30.22,
+    "stock": 8,
+    "coverUrl": ""
   },
   {
     "bookID": 20,
@@ -237,7 +294,10 @@
     "ratingsCount": 6500,
     "textReviewsCount": 255,
     "publicationDate": "2018",
-    "publisher": "MIT Press"
+    "publisher": "MIT Press",
+    "price": 33.39,
+    "stock": 9,
+    "coverUrl": ""
   },
   {
     "bookID": 21,
@@ -249,7 +309,10 @@
     "ratingsCount": 7291,
     "textReviewsCount": 352,
     "publicationDate": "2019",
-    "publisher": "Viking"
+    "publisher": "Viking",
+    "price": 36.56,
+    "stock": 10,
+    "coverUrl": ""
   },
   {
     "bookID": 22,
@@ -261,7 +324,10 @@
     "ratingsCount": 8082,
     "textReviewsCount": 449,
     "publicationDate": "2020",
-    "publisher": "W. W. Norton & Company"
+    "publisher": "W. W. Norton & Company",
+    "price": 39.73,
+    "stock": 11,
+    "coverUrl": ""
   },
   {
     "bookID": 23,
@@ -273,7 +339,10 @@
     "ratingsCount": 8873,
     "textReviewsCount": 546,
     "publicationDate": "2016",
-    "publisher": "Crown"
+    "publisher": "Crown",
+    "price": 42.9,
+    "stock": 12,
+    "coverUrl": ""
   },
   {
     "bookID": 24,
@@ -285,7 +354,10 @@
     "ratingsCount": 9664,
     "textReviewsCount": 643,
     "publicationDate": "2015",
-    "publisher": "Basic Books"
+    "publisher": "Basic Books",
+    "price": 46.07,
+    "stock": 13,
+    "coverUrl": ""
   },
   {
     "bookID": 25,
@@ -297,7 +369,10 @@
     "ratingsCount": 955,
     "textReviewsCount": 740,
     "publicationDate": "2017",
-    "publisher": "Knopf"
+    "publisher": "Knopf",
+    "price": 49.24,
+    "stock": 14,
+    "coverUrl": ""
   },
   {
     "bookID": 26,
@@ -309,7 +384,10 @@
     "ratingsCount": 1746,
     "textReviewsCount": 837,
     "publicationDate": "2022",
-    "publisher": "O'Reilly Media"
+    "publisher": "O'Reilly Media",
+    "price": 12.41,
+    "stock": 15,
+    "coverUrl": ""
   },
   {
     "bookID": 27,
@@ -321,7 +399,10 @@
     "ratingsCount": 2537,
     "textReviewsCount": 84,
     "publicationDate": "2015",
-    "publisher": "Wiley"
+    "publisher": "Wiley",
+    "price": 15.58,
+    "stock": 16,
+    "coverUrl": ""
   },
   {
     "bookID": 28,
@@ -333,7 +414,10 @@
     "ratingsCount": 3328,
     "textReviewsCount": 181,
     "publicationDate": "2013",
-    "publisher": "Wiley"
+    "publisher": "Wiley",
+    "price": 18.75,
+    "stock": 17,
+    "coverUrl": ""
   },
   {
     "bookID": 29,
@@ -345,7 +429,10 @@
     "ratingsCount": 4119,
     "textReviewsCount": 278,
     "publicationDate": "2019",
-    "publisher": "O'Reilly Media"
+    "publisher": "O'Reilly Media",
+    "price": 21.92,
+    "stock": 18,
+    "coverUrl": ""
   },
   {
     "bookID": 30,
@@ -357,7 +444,10 @@
     "ratingsCount": 4910,
     "textReviewsCount": 375,
     "publicationDate": "2020",
-    "publisher": "O'Reilly Media"
+    "publisher": "O'Reilly Media",
+    "price": 25.09,
+    "stock": 19,
+    "coverUrl": ""
   },
   {
     "bookID": 31,
@@ -369,7 +459,10 @@
     "ratingsCount": 5701,
     "textReviewsCount": 472,
     "publicationDate": "2013",
-    "publisher": "W. W. Norton & Company"
+    "publisher": "W. W. Norton & Company",
+    "price": 28.26,
+    "stock": 20,
+    "coverUrl": ""
   },
   {
     "bookID": 32,
@@ -381,7 +474,10 @@
     "ratingsCount": 6492,
     "textReviewsCount": 569,
     "publicationDate": "2017",
-    "publisher": "Dey Street Books"
+    "publisher": "Dey Street Books",
+    "price": 31.43,
+    "stock": 5,
+    "coverUrl": ""
   },
   {
     "bookID": 33,
@@ -393,7 +489,10 @@
     "ratingsCount": 7283,
     "textReviewsCount": 666,
     "publicationDate": "2020",
-    "publisher": "MIT Press"
+    "publisher": "MIT Press",
+    "price": 34.6,
+    "stock": 6,
+    "coverUrl": ""
   },
   {
     "bookID": 34,
@@ -405,7 +504,10 @@
     "ratingsCount": 8074,
     "textReviewsCount": 763,
     "publicationDate": "2019",
-    "publisher": "W. W. Norton & Company"
+    "publisher": "W. W. Norton & Company",
+    "price": 37.77,
+    "stock": 7,
+    "coverUrl": ""
   },
   {
     "bookID": 35,
@@ -417,7 +519,10 @@
     "ratingsCount": 8865,
     "textReviewsCount": 860,
     "publicationDate": "2001",
-    "publisher": "HarperBusiness"
+    "publisher": "HarperBusiness",
+    "price": 40.94,
+    "stock": 8,
+    "coverUrl": ""
   },
   {
     "bookID": 36,
@@ -429,7 +534,10 @@
     "ratingsCount": 9656,
     "textReviewsCount": 107,
     "publicationDate": "2011",
-    "publisher": "Crown Business"
+    "publisher": "Crown Business",
+    "price": 44.11,
+    "stock": 9,
+    "coverUrl": ""
   },
   {
     "bookID": 37,
@@ -441,7 +549,10 @@
     "ratingsCount": 947,
     "textReviewsCount": 204,
     "publicationDate": "2014",
-    "publisher": "HarperBusiness"
+    "publisher": "HarperBusiness",
+    "price": 47.28,
+    "stock": 10,
+    "coverUrl": ""
   },
   {
     "bookID": 38,
@@ -453,7 +564,10 @@
     "ratingsCount": 1738,
     "textReviewsCount": 301,
     "publicationDate": "1997",
-    "publisher": "Harvard Business School Press"
+    "publisher": "Harvard Business School Press",
+    "price": 10.45,
+    "stock": 11,
+    "coverUrl": ""
   },
   {
     "bookID": 39,
@@ -465,7 +579,10 @@
     "ratingsCount": 2529,
     "textReviewsCount": 398,
     "publicationDate": "2018",
-    "publisher": "Portfolio"
+    "publisher": "Portfolio",
+    "price": 13.62,
+    "stock": 12,
+    "coverUrl": ""
   },
   {
     "bookID": 40,
@@ -477,7 +594,10 @@
     "ratingsCount": 3320,
     "textReviewsCount": 495,
     "publicationDate": "1995",
-    "publisher": "Vintage"
+    "publisher": "Vintage",
+    "price": 16.79,
+    "stock": 13,
+    "coverUrl": ""
   },
   {
     "bookID": 41,
@@ -489,7 +609,10 @@
     "ratingsCount": 4111,
     "textReviewsCount": 592,
     "publicationDate": "2018",
-    "publisher": "Bantam"
+    "publisher": "Bantam",
+    "price": 19.96,
+    "stock": 14,
+    "coverUrl": ""
   },
   {
     "bookID": 42,
@@ -501,7 +624,10 @@
     "ratingsCount": 4902,
     "textReviewsCount": 689,
     "publicationDate": "2018",
-    "publisher": "Portfolio"
+    "publisher": "Portfolio",
+    "price": 23.13,
+    "stock": 15,
+    "coverUrl": ""
   },
   {
     "bookID": 43,
@@ -513,7 +639,10 @@
     "ratingsCount": 5693,
     "textReviewsCount": 786,
     "publicationDate": "1988",
-    "publisher": "Bantam Books"
+    "publisher": "Bantam Books",
+    "price": 26.3,
+    "stock": 16,
+    "coverUrl": ""
   },
   {
     "bookID": 44,
@@ -525,7 +654,10 @@
     "ratingsCount": 6484,
     "textReviewsCount": 33,
     "publicationDate": "1980",
-    "publisher": "Random House"
+    "publisher": "Random House",
+    "price": 29.47,
+    "stock": 17,
+    "coverUrl": ""
   },
   {
     "bookID": 45,
@@ -537,7 +669,10 @@
     "ratingsCount": 7275,
     "textReviewsCount": 130,
     "publicationDate": "2016",
-    "publisher": "Scribner"
+    "publisher": "Scribner",
+    "price": 32.64,
+    "stock": 18,
+    "coverUrl": ""
   },
   {
     "bookID": 46,
@@ -549,7 +684,10 @@
     "ratingsCount": 8066,
     "textReviewsCount": 227,
     "publicationDate": "1976",
-    "publisher": "Oxford University Press"
+    "publisher": "Oxford University Press",
+    "price": 35.81,
+    "stock": 19,
+    "coverUrl": ""
   },
   {
     "bookID": 47,
@@ -561,7 +699,10 @@
     "ratingsCount": 8857,
     "textReviewsCount": 324,
     "publicationDate": "2014",
-    "publisher": "Henry Holt and Company"
+    "publisher": "Henry Holt and Company",
+    "price": 38.98,
+    "stock": 20,
+    "coverUrl": ""
   },
   {
     "bookID": 48,
@@ -573,7 +714,10 @@
     "ratingsCount": 9648,
     "textReviewsCount": 421,
     "publicationDate": "2010",
-    "publisher": "Crown"
+    "publisher": "Crown",
+    "price": 42.15,
+    "stock": 5,
+    "coverUrl": ""
   },
   {
     "bookID": 49,
@@ -585,7 +729,10 @@
     "ratingsCount": 939,
     "textReviewsCount": 518,
     "publicationDate": "2020",
-    "publisher": "Random House"
+    "publisher": "Random House",
+    "price": 45.32,
+    "stock": 6,
+    "coverUrl": ""
   },
   {
     "bookID": 50,
@@ -597,7 +744,10 @@
     "ratingsCount": 1730,
     "textReviewsCount": 615,
     "publicationDate": "2019",
-    "publisher": "Doubleday"
+    "publisher": "Doubleday",
+    "price": 48.49,
+    "stock": 7,
+    "coverUrl": ""
   },
   {
     "bookID": 51,
@@ -609,7 +759,10 @@
     "ratingsCount": 2521,
     "textReviewsCount": 712,
     "publicationDate": "2014",
-    "publisher": "Harper"
+    "publisher": "Harper",
+    "price": 11.66,
+    "stock": 8,
+    "coverUrl": ""
   },
   {
     "bookID": 52,
@@ -621,7 +774,10 @@
     "ratingsCount": 3312,
     "textReviewsCount": 809,
     "publicationDate": "1997",
-    "publisher": "W. W. Norton & Company"
+    "publisher": "W. W. Norton & Company",
+    "price": 14.83,
+    "stock": 9,
+    "coverUrl": ""
   },
   {
     "bookID": 53,
@@ -633,7 +789,10 @@
     "ratingsCount": 4103,
     "textReviewsCount": 56,
     "publicationDate": "2015",
-    "publisher": "Bloomsbury Publishing"
+    "publisher": "Bloomsbury Publishing",
+    "price": 18,
+    "stock": 10,
+    "coverUrl": ""
   },
   {
     "bookID": 54,
@@ -645,7 +804,10 @@
     "ratingsCount": 4894,
     "textReviewsCount": 153,
     "publicationDate": "2015",
-    "publisher": "Simon & Schuster"
+    "publisher": "Simon & Schuster",
+    "price": 21.17,
+    "stock": 11,
+    "coverUrl": ""
   },
   {
     "bookID": 55,
@@ -657,7 +819,10 @@
     "ratingsCount": 5685,
     "textReviewsCount": 250,
     "publicationDate": "2010",
-    "publisher": "Random House"
+    "publisher": "Random House",
+    "price": 24.34,
+    "stock": 12,
+    "coverUrl": ""
   },
   {
     "bookID": 56,
@@ -669,7 +834,10 @@
     "ratingsCount": 6476,
     "textReviewsCount": 347,
     "publicationDate": "1997",
-    "publisher": "Doubleday"
+    "publisher": "Doubleday",
+    "price": 27.51,
+    "stock": 13,
+    "coverUrl": ""
   },
   {
     "bookID": 57,
@@ -681,7 +849,10 @@
     "ratingsCount": 7267,
     "textReviewsCount": 444,
     "publicationDate": "2020",
-    "publisher": "Crown"
+    "publisher": "Crown",
+    "price": 30.68,
+    "stock": 14,
+    "coverUrl": ""
   },
   {
     "bookID": 58,
@@ -693,7 +864,10 @@
     "ratingsCount": 8058,
     "textReviewsCount": 541,
     "publicationDate": "2015",
-    "publisher": "Liveright"
+    "publisher": "Liveright",
+    "price": 33.85,
+    "stock": 15,
+    "coverUrl": ""
   },
   {
     "bookID": 59,
@@ -705,7 +879,10 @@
     "ratingsCount": 8849,
     "textReviewsCount": 638,
     "publicationDate": "2018",
-    "publisher": "Doubleday"
+    "publisher": "Doubleday",
+    "price": 37.02,
+    "stock": 16,
+    "coverUrl": ""
   },
   {
     "bookID": 60,
@@ -717,7 +894,10 @@
     "ratingsCount": 9640,
     "textReviewsCount": 735,
     "publicationDate": "1980",
-    "publisher": "Harper & Row"
+    "publisher": "Harper & Row",
+    "price": 40.19,
+    "stock": 17,
+    "coverUrl": ""
   },
   {
     "bookID": 61,
@@ -729,7 +909,10 @@
     "ratingsCount": 931,
     "textReviewsCount": 832,
     "publicationDate": "1949",
-    "publisher": "Secker & Warburg"
+    "publisher": "Secker & Warburg",
+    "price": 43.36,
+    "stock": 18,
+    "coverUrl": ""
   },
   {
     "bookID": 62,
@@ -741,7 +924,10 @@
     "ratingsCount": 1722,
     "textReviewsCount": 79,
     "publicationDate": "1960",
-    "publisher": "J. B. Lippincott & Co."
+    "publisher": "J. B. Lippincott & Co.",
+    "price": 46.53,
+    "stock": 19,
+    "coverUrl": ""
   },
   {
     "bookID": 63,
@@ -753,7 +939,10 @@
     "ratingsCount": 2513,
     "textReviewsCount": 176,
     "publicationDate": "1925",
-    "publisher": "Charles Scribner's Sons"
+    "publisher": "Charles Scribner's Sons",
+    "price": 49.7,
+    "stock": 20,
+    "coverUrl": ""
   },
   {
     "bookID": 64,
@@ -765,7 +954,10 @@
     "ratingsCount": 3304,
     "textReviewsCount": 273,
     "publicationDate": "2017",
-    "publisher": "Grand Central Publishing"
+    "publisher": "Grand Central Publishing",
+    "price": 12.87,
+    "stock": 5,
+    "coverUrl": ""
   },
   {
     "bookID": 65,
@@ -777,7 +969,10 @@
     "ratingsCount": 4095,
     "textReviewsCount": 370,
     "publicationDate": "2014",
-    "publisher": "Tor Books"
+    "publisher": "Tor Books",
+    "price": 16.04,
+    "stock": 6,
+    "coverUrl": ""
   },
   {
     "bookID": 66,
@@ -789,7 +984,10 @@
     "ratingsCount": 4886,
     "textReviewsCount": 467,
     "publicationDate": "1969",
-    "publisher": "Ace Books"
+    "publisher": "Ace Books",
+    "price": 19.21,
+    "stock": 7,
+    "coverUrl": ""
   },
   {
     "bookID": 67,
@@ -801,7 +999,10 @@
     "ratingsCount": 5677,
     "textReviewsCount": 564,
     "publicationDate": "1979",
-    "publisher": "Doubleday"
+    "publisher": "Doubleday",
+    "price": 22.38,
+    "stock": 8,
+    "coverUrl": ""
   },
   {
     "bookID": 68,
@@ -813,7 +1014,10 @@
     "ratingsCount": 6468,
     "textReviewsCount": 661,
     "publicationDate": "1987",
-    "publisher": "Alfred A. Knopf"
+    "publisher": "Alfred A. Knopf",
+    "price": 25.55,
+    "stock": 9,
+    "coverUrl": ""
   },
   {
     "bookID": 69,
@@ -825,7 +1029,10 @@
     "ratingsCount": 7259,
     "textReviewsCount": 758,
     "publicationDate": "2003",
-    "publisher": "Riverhead Books"
+    "publisher": "Riverhead Books",
+    "price": 28.72,
+    "stock": 10,
+    "coverUrl": ""
   },
   {
     "bookID": 70,
@@ -837,7 +1044,10 @@
     "ratingsCount": 8050,
     "textReviewsCount": 855,
     "publicationDate": "2020",
-    "publisher": "Viking"
+    "publisher": "Viking",
+    "price": 31.89,
+    "stock": 11,
+    "coverUrl": ""
   },
   {
     "bookID": 71,
@@ -849,7 +1059,10 @@
     "ratingsCount": 8841,
     "textReviewsCount": 102,
     "publicationDate": "2018-10-16",
-    "publisher": "Avery"
+    "publisher": "Avery",
+    "price": 35.06,
+    "stock": 12,
+    "coverUrl": ""
   },
   {
     "bookID": 72,
@@ -861,7 +1074,10 @@
     "ratingsCount": 9632,
     "textReviewsCount": 199,
     "publicationDate": "2006",
-    "publisher": "Random House"
+    "publisher": "Random House",
+    "price": 38.23,
+    "stock": 13,
+    "coverUrl": ""
   },
   {
     "bookID": 73,
@@ -873,7 +1089,10 @@
     "ratingsCount": 923,
     "textReviewsCount": 296,
     "publicationDate": "2016",
-    "publisher": "Grand Central Publishing"
+    "publisher": "Grand Central Publishing",
+    "price": 41.4,
+    "stock": 14,
+    "coverUrl": ""
   },
   {
     "bookID": 74,
@@ -885,7 +1104,10 @@
     "ratingsCount": 1714,
     "textReviewsCount": 393,
     "publicationDate": "1989",
-    "publisher": "Free Press"
+    "publisher": "Free Press",
+    "price": 44.57,
+    "stock": 15,
+    "coverUrl": ""
   },
   {
     "bookID": 75,
@@ -897,7 +1119,10 @@
     "ratingsCount": 2505,
     "textReviewsCount": 490,
     "publicationDate": "2016",
-    "publisher": "Scribner"
+    "publisher": "Scribner",
+    "price": 47.74,
+    "stock": 16,
+    "coverUrl": ""
   },
   {
     "bookID": 76,
@@ -909,7 +1134,10 @@
     "ratingsCount": 3296,
     "textReviewsCount": 587,
     "publicationDate": "1946",
-    "publisher": "Beacon Press"
+    "publisher": "Beacon Press",
+    "price": 10.91,
+    "stock": 17,
+    "coverUrl": ""
   },
   {
     "bookID": 77,
@@ -921,7 +1149,10 @@
     "ratingsCount": 4087,
     "textReviewsCount": 684,
     "publicationDate": "2010",
-    "publisher": "Hazelden"
+    "publisher": "Hazelden",
+    "price": 14.08,
+    "stock": 18,
+    "coverUrl": ""
   },
   {
     "bookID": 78,
@@ -933,7 +1164,10 @@
     "ratingsCount": 4878,
     "textReviewsCount": 781,
     "publicationDate": "2014",
-    "publisher": "Crown Currency"
+    "publisher": "Crown Currency",
+    "price": 17.25,
+    "stock": 19,
+    "coverUrl": ""
   },
   {
     "bookID": 79,
@@ -945,7 +1179,10 @@
     "ratingsCount": 5669,
     "textReviewsCount": 28,
     "publicationDate": "2007",
-    "publisher": "Trumpeter"
+    "publisher": "Trumpeter",
+    "price": 20.42,
+    "stock": 20,
+    "coverUrl": ""
   },
   {
     "bookID": 80,
@@ -957,6 +1194,9 @@
     "ratingsCount": 6460,
     "textReviewsCount": 125,
     "publicationDate": "1936",
-    "publisher": "Simon & Schuster"
+    "publisher": "Simon & Schuster",
+    "price": 23.59,
+    "stock": 5,
+    "coverUrl": ""
   }
 ]

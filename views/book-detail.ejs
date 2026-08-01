@@ -17,6 +17,7 @@
     <p><%= book.stock > 0 ? `${book.stock} available` : "Currently out of stock" %></p>
     <% if (book.stock > 0) { %>
       <form action="/cart/items" method="post">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <input type="hidden" name="bookId" value="<%= book._id %>">
         <label for="quantity">Quantity</label>
         <input id="quantity" name="quantity" type="number" min="1" max="<%= book.stock %>" value="1" required>
@@ -37,6 +38,7 @@
   <% }) %>
   <% if (user) { %>
     <form action="/books/<%= book._id %>/comments" method="post">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
       <label for="comment-body">Leave a comment</label>
       <textarea id="comment-body" name="body" rows="4" maxlength="1000" required></textarea>
       <button class="button" type="submit">Post comment</button>

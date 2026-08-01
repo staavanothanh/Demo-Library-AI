@@ -4,7 +4,7 @@
         <h1>Add a book to the collection</h1>
         <p>New books refresh the semantic recommendation index automatically.</p><%- include("partials/errors", { errors
             }) %>
-            <form method="post" action="/admin-dashboard/add-book"><label>Title<input name="title"
+            <form method="post" action="/admin-dashboard/add-book"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><label>Title<input name="title"
                         value="<%= values.title || "" %>" required></label><label>Authors<input name="authors"
                         value="<%= values.authors || "" %>" required></label><label>Genre<input name="genre"
                         value="<%= values.genre || "" %>"></label><label>Publisher<input name="publisher"

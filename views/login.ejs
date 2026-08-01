@@ -3,7 +3,7 @@
         <p class="eyebrow">WELCOME BACK</p>
         <h1>Sign in to your library</h1>
         <%- include("partials/errors", { errors }) %>
-            <form method="post" action="/login"><label>Username<input name="username"
+            <form method="post" action="/login"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><label>Username<input name="username"
                         required></label><label>Password<input type="password" name="password" required></label><button
                     class="button" type="submit">Sign in</button></form>
             <p>Need an account? <a href="/register">Register now</a>.</p>

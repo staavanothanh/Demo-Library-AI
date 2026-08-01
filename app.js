@@ -14,6 +14,7 @@ const { createCommentController } = require("./controllers/commentController");
 const { createCartRoutes } = require("./routes/cartRoutes");
 const { createCheckoutRoutes } = require("./routes/checkoutRoutes");
 const { createCommentRoutes } = require("./routes/commentRoutes");
+const { createCsrfMiddleware } = require("./middleware/csrf");
 const { configurePassport } = require("./config/passport");
 const { requireAuth, requireAdmin } = require("./middleware/auth");
 const { renderForm, showValidation, validationResult } = require("./middleware/validation");
@@ -46,6 +47,8 @@ function createApp({ sessionStore, recommendationClient = createRecommendationCl
   configurePassport(passport, { User, bcrypt });
   app.use(passport.initialize());
   app.use(passport.session());
+  const csrf = createCsrfMiddleware();
+  app.use(csrf.exposeToken);
   app.use((req, res, next) => {
     res.locals.user = req.user;
     res.locals.message = req.query.message;
@@ -62,12 +65,12 @@ function createApp({ sessionStore, recommendationClient = createRecommendationCl
   const checkoutController = createCheckoutController({ Book });
   const commentController = createCommentController({ Book, Comment });
 
-  app.use(createAuthRoutes({ controller: authController, passport, renderForm, showValidation }));
+  app.use(createAuthRoutes({ controller: authController, passport, renderForm, showValidation, csrf: csrf.requireToken }));
   app.use(createCatalogRoutes({ controller: catalogController }));
-  app.use(createCartRoutes({ controller: cartController }));
-  app.use(createCheckoutRoutes({ controller: checkoutController }));
-  app.use(createCommentRoutes({ controller: commentController, requireAuth }));
-  app.use(createAdminRoutes({ controller: adminController, requireAuth, requireAdmin, showValidation }));
+  app.use(createCartRoutes({ controller: cartController, csrf: csrf.requireToken }));
+  app.use(createCheckoutRoutes({ controller: checkoutController, csrf: csrf.requireToken }));
+  app.use(createCommentRoutes({ controller: commentController, requireAuth, csrf: csrf.requireToken }));
+  app.use(createAdminRoutes({ controller: adminController, requireAuth, requireAdmin, showValidation, csrf: csrf.requireToken }));
   app.use(createRecommendationRoutes({ controller: recommendationController, requireAuth, validationResult }));
 
   app.use((req, res) => res.status(404).render("error", { status: 404, message: "The page you requested was not found." }));

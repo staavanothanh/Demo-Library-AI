@@ -10,7 +10,7 @@ async function seed() {
   if (!process.env.MONGODB_URI) throw new Error("MONGODB_URI is required. Create .env from .env.example first.");
   await mongoose.connect(process.env.MONGODB_URI);
   await Promise.all(books.map((book) => Book.updateOne({ title: book.title }, { $set: book }, { upsert: true })));
-  console.log(`Seeded ${books.length} books into Library.booksforai.`);
+  console.log(`Seeded ${books.length} books into the books collection.`);
   await mongoose.disconnect();
 }
 

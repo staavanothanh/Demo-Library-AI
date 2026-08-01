@@ -11,6 +11,9 @@
     "dev": "nodemon server.js",
     "start": "node server.js",
     "seed": "node scripts/seedBooks.js",
+    "catalog:complete": "node scripts/completeCatalogData.js",
+    "catalog:migrate": "node scripts/migrateStoreCatalog.js",
+    "ai:smoke": "node scripts/smokeTestOpenCodeZen.js",
     "test": "vitest run"
   },
   "dependencies": {
