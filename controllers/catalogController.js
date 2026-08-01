@@ -1,3 +1,5 @@
+const mongoose = require("mongoose");
+
 const SORTS = {
   title: { title: 1, _id: 1 },
   "price-asc": { price: 1, title: 1, _id: 1 },
@@ -44,6 +46,14 @@ function createCatalogController({ Book }) {
         const currentPage = Math.min(query.page, totalPages);
         const books = await Book.find(filter).sort(SORTS[query.sort]).skip((currentPage - 1) * query.limit).limit(query.limit).lean();
         return res.render("booklist", { books, query: query.q, filters: query, currentPage, totalPages, totalBooks, pageSize: query.limit });
+      } catch (error) { return next(error); }
+    },
+    showBook: async (req, res, next) => {
+      if (!mongoose.Types.ObjectId.isValid(req.params.id)) return res.status(404).render("error", { status: 404, message: "The book you requested was not found." });
+      try {
+        const book = await Book.findById(req.params.id).lean();
+        if (!book) return res.status(404).render("error", { status: 404, message: "The book you requested was not found." });
+        return res.render("book-detail", { book, comments: [] });
       } catch (error) { return next(error); }
     },
   };
