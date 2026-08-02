@@ -14,6 +14,7 @@
     "catalog:complete": "node scripts/completeCatalogData.js",
     "catalog:migrate": "node scripts/migrateStoreCatalog.js",
     "ai:smoke": "node scripts/smokeTestOpenCodeZen.js",
+    "ai:verify": "node scripts/verifyAiData.js",
     "policies:index": "node scripts/indexPolicies.js",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage"

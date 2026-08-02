@@ -58,12 +58,26 @@ describe("public chatbot endpoint", () => {
     ["AUTH_FAILED", 502],
     ["INVALID_RESPONSE", 502],
     ["UPSTREAM_ERROR", 502],
+    ["CATALOG_EMPTY", 503],
+    ["MODEL_LOAD_FAILED", 503],
+    ["EMBEDDING_FAILED", 503],
+    ["EMBEDDING_INVALID", 503],
+    ["RECOMMENDATION_FAILED", 503],
     ["INTERNAL", 500],
   ])("maps provider error %s to HTTP %s", async (code, expectedStatus) => {
     const app = createApp({ chat: async () => { throw Object.assign(new Error("provider detail"), { code }); } });
     const response = await request(app).post("/api/ai/chat").send({ message: "Tell me about shipping." });
 
     expect(response.status).toBe(expectedStatus);
-    expect(response.body).toEqual({ error: "The bookstore assistant is temporarily unavailable." });
+    const expectedMessages = {
+      CATALOG_EMPTY: "Book recommendations are unavailable because the catalog is empty.",
+      MODEL_LOAD_FAILED: "Book recommendations are temporarily unavailable while the AI model loads.",
+      EMBEDDING_FAILED: "The bookstore assistant could not process that request right now.",
+      EMBEDDING_INVALID: "The bookstore assistant could not process that request right now.",
+      RECOMMENDATION_FAILED: "Book recommendations are temporarily unavailable.",
+    };
+    expect(response.body).toEqual({
+      error: expectedMessages[code] || "The bookstore assistant is temporarily unavailable.",
+    });
   });
 });

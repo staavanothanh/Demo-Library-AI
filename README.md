@@ -44,6 +44,7 @@ services/recommendationClient.js    Worker client and book-index refresh boundar
 services/tensorflowWorker.js        Background AI worker
 services/tensorflowService.js       USE embeddings and cosine similarity
 scripts/seedBooks.js                Seed catalog
+scripts/verifyAiData.js             Read-only AI/catalog/policy diagnostics
 views/                              EJS pages and partials
 public/                             Browser JavaScript and CSS
 tests/                              Vitest/Supertest checks
@@ -84,28 +85,32 @@ MONGODB_URI=<configured-in-render-secret>
 
 Render supplies `PORT`; do not hard-code a production port. Use the same canonical HTTPS hostname for login and subsequent form submissions. After changing the session secret or proxy setting, redeploy and clear the old site cookie before testing again. A forwarded-HTTPS `GET /login` should return a `connect.sid` cookie with `Secure; HttpOnly; SameSite=Lax`.
 
-3. Prepare existing catalog records and seed clone data:
+3. Bootstrap the data in this order. These commands write MongoDB and should be run manually only in an authorized environment:
 
 ```powershell
 npm run catalog:migrate
 npm run seed
+npm run policies:index
+npm run ai:verify
 ```
 
-4. Configure OpenCode Zen in `.env` using the variables in `.env.example`, then verify the provider without printing the key:
+`npm run ai:verify` is read-only. It reports book/policy counts, embedding dimensions, invalid embeddings, recommendation readiness, and Atlas index readiness without printing secrets or connection strings.
+
+4. Configure OpenCode Zen using the variables in `.env.example`, then verify the provider without printing the key:
 
 ```powershell
 npm run ai:smoke
 ```
 
-5. Index internal demo policies after policy documents change:
+For Atlas Vector Search, create a `knowledge_chunks` vector index named by `POLICY_VECTOR_INDEX_NAME` with:
 
-```powershell
-npm run policies:index
-```
+- path: `embedding`
+- dimensions: `512`
+- similarity: `cosine`
 
-For Atlas Vector Search, create a `knowledge_chunks` index named by `POLICY_VECTOR_INDEX_NAME` with vector path `embedding`, dimensions `512`, and cosine similarity. If the index is unavailable, the application uses in-memory cosine fallback.
+The diagnostic reports a missing or invalid index. The application may use the normalized in-memory cosine fallback when Atlas is unavailable, but policy chunks must still be valid `category: "policy"` documents with 512-dimensional finite embeddings.
 
-6. Run tests and start the app:
+5. Run tests and start the app:
 
 ```powershell
 npm test

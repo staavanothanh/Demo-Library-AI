@@ -53,6 +53,45 @@ function createClient({ getBooks = () => BOOKS_A } = {}) {
 }
 
 describe("recommendation catalog recovery", () => {
+  it("exposes a ready status after a non-empty catalog is loaded", async () => {
+    const { client, workers } = createClient();
+    const refresh = client.refreshBooks();
+    await flush();
+    expect(client.getStatus()).toMatchObject({ status: "loading", catalogCount: 1 });
+    reply(workers[0], workers[0].messages[0], { response: "loaded", books: [] });
+
+    await expect(refresh).resolves.toMatchObject({ response: "loaded" });
+    expect(client.getStatus()).toMatchObject({ status: "ready", catalogCount: 1, catalogVersion: 1 });
+  });
+
+  it("reports an empty catalog without creating a worker", async () => {
+    const { client, workers } = createClient({ getBooks: () => [] });
+
+    await expect(client.refreshBooks()).rejects.toMatchObject({ code: "CATALOG_EMPTY" });
+    expect(client.getStatus()).toMatchObject({ status: "empty", catalogCount: 0, lastErrorCode: "CATALOG_EMPTY" });
+    expect(workers).toHaveLength(0);
+  });
+
+  it("preserves worker error codes and exposes failed readiness", async () => {
+    const { client, workers } = createClient();
+    const refresh = client.refreshBooks();
+    await flush();
+    reply(workers[0], workers[0].messages[0], { error: "model unavailable", code: "MODEL_LOAD_FAILED" });
+
+    await expect(refresh).rejects.toMatchObject({ code: "MODEL_LOAD_FAILED" });
+    expect(client.getStatus()).toMatchObject({ status: "failed", lastErrorCode: "MODEL_LOAD_FAILED" });
+  });
+
+  it("reports embedding failures with a diagnostic code", async () => {
+    const { client, workers } = createClient();
+    const embedding = client.embed("shipping policy");
+    await flush();
+    reply(workers[0], workers[0].messages[0], { error: "embedding unavailable", code: "EMBEDDING_FAILED" });
+
+    await expect(embedding).rejects.toMatchObject({ code: "EMBEDDING_FAILED" });
+    expect(client.getStatus()).toMatchObject({ status: "failed", lastErrorCode: "EMBEDDING_FAILED" });
+  });
+
   it("retains the initial snapshot after a load error and retries it for a later request", async () => {
     const { client, workers, getFindCalls } = createClient();
     const initialRefresh = client.refreshBooks();

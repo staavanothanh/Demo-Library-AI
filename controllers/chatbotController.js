@@ -21,8 +21,22 @@ function createChatbotController({ chatbotService }) {
           AUTH_FAILED: 502,
           INVALID_RESPONSE: 502,
           UPSTREAM_ERROR: 502,
+          CATALOG_EMPTY: 503,
+          MODEL_LOAD_FAILED: 503,
+          EMBEDDING_FAILED: 503,
+          EMBEDDING_INVALID: 503,
+          RECOMMENDATION_FAILED: 503,
         };
-        return res.status(statusByCode[error.code] || 500).json({ error: "The bookstore assistant is temporarily unavailable." });
+        const messageByCode = {
+          CATALOG_EMPTY: "Book recommendations are unavailable because the catalog is empty.",
+          MODEL_LOAD_FAILED: "Book recommendations are temporarily unavailable while the AI model loads.",
+          EMBEDDING_FAILED: "The bookstore assistant could not process that request right now.",
+          EMBEDDING_INVALID: "The bookstore assistant could not process that request right now.",
+          RECOMMENDATION_FAILED: "Book recommendations are temporarily unavailable.",
+        };
+        return res.status(statusByCode[error.code] || 500).json({
+          error: messageByCode[error.code] || "The bookstore assistant is temporarily unavailable.",
+        });
       }
     },
   };
