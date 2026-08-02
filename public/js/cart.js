@@ -3,6 +3,8 @@
   const mutationForms = [...document.querySelectorAll("[data-cart-mutation]")];
   const checkoutForm = document.querySelector("[data-checkout-form]");
   const status = document.querySelector("[data-cart-status]");
+  const toast = document.querySelector("[data-cart-toast]");
+  let toastDismissTimer;
   if ((!detailForm && !mutationForms.length && !checkoutForm) || typeof window.fetch !== "function") return;
 
   const updateCount = (cartCount) => {
@@ -19,16 +21,44 @@
     status.hidden = false;
   };
 
+  const hideToast = () => {
+    if (!toast) return;
+    if (toastDismissTimer) {
+      window.clearTimeout(toastDismissTimer);
+      toastDismissTimer = undefined;
+    }
+    toast.hidden = true;
+    toast.replaceChildren();
+  };
+
   const showAddSuccess = (cartCount) => {
-    if (!status) return;
-    status.replaceChildren();
-    status.classList.remove("cart-status-error");
-    status.append(document.createTextNode(`Added to your cart. Cart count: ${cartCount}. `));
+    const message = `Added to your cart. Cart count: ${cartCount}. `;
+    if (!toast) {
+      showStatus(message, true);
+      return;
+    }
+    if (status) {
+      status.hidden = true;
+      status.replaceChildren();
+      status.classList.remove("cart-status-error");
+    }
+    hideToast();
+    const content = document.createElement("p");
+    content.className = "cart-toast-message";
+    content.append(document.createTextNode(message));
     const link = document.createElement("a");
     link.href = "/cart";
     link.textContent = "View cart";
-    status.append(link);
-    status.hidden = false;
+    content.append(link);
+    const close = document.createElement("button");
+    close.type = "button";
+    close.className = "cart-toast-close";
+    close.setAttribute("aria-label", "Dismiss cart notification");
+    close.textContent = "×";
+    close.addEventListener("click", hideToast);
+    toast.append(content, close);
+    toast.hidden = false;
+    toastDismissTimer = window.setTimeout(hideToast, 6000);
   };
 
   const isValidPayload = (payload) => payload?.ok === true

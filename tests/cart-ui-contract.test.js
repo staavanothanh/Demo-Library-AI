@@ -7,11 +7,14 @@ describe("Add to cart UI contract", () => {
   it("keeps the detail form, live status region, and server cart-count hook", () => {
     const detail = fs.readFileSync(path.join(root, "views", "book-detail.ejs"), "utf8");
     const header = fs.readFileSync(path.join(root, "views", "partials", "header.ejs"), "utf8");
+    const footer = fs.readFileSync(path.join(root, "views", "partials", "footer.ejs"), "utf8");
 
     expect(detail).toContain("data-cart-form");
     expect(detail).toContain('name="_csrf"');
     expect(detail).toContain("data-cart-status");
     expect(header).toContain("data-cart-count");
+    expect(footer).toContain("data-cart-toast");
+    expect(footer).toContain('aria-live="polite"');
   });
 
   it("marks cart-page update, remove, and clear forms for enhancement", () => {
@@ -29,6 +32,10 @@ describe("Add to cart UI contract", () => {
     expect(cartScript).toContain("data-cart-mutation");
     expect(cartScript).toContain("window.location.assign(\"/cart\")");
     expect(cartScript).toContain("data-checkout-form");
+    expect(cartScript).toContain("data-cart-toast");
+    expect(cartScript).toContain("Dismiss cart notification");
+    expect(cartScript).toContain("Added to your cart. Cart count:");
+    expect(cartScript).toContain("status.hidden = true");
     expect(cartScript).toContain("Demo payment completed");
     expect(cartScript).toContain("Number.isSafeInteger(payload.cartCount)");
     expect(cartScript).toContain("X-CSRF-Token");
