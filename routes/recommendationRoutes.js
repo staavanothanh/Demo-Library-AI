@@ -3,10 +3,10 @@ const { body } = require("express-validator");
 
 const MAX_PROMPT_LENGTH = 2000;
 
-function createRecommendationRoutes({ controller, requireAuth, validationResult, limiter = (req, res, next) => next() }) {
+function createRecommendationRoutes({ controller, requireAuth, validationResult, limiter = (req, res, next) => next(), csrf = (req, res, next) => next() }) {
   const router = express.Router();
   router.get("/tensorflow-chat", requireAuth, controller.showChat);
-  router.post("/tensorflow-chat", requireAuth, limiter, [
+  router.post("/tensorflow-chat", requireAuth, csrf, limiter, [
     body("prompt")
       .trim()
       .notEmpty()

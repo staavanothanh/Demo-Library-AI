@@ -4,8 +4,9 @@
         <h1>Ask AI Finder</h1>
         <p>Describe what you want to learn or read. The local recommendation model compares your request with the
             catalog.</p>
-        <form id="recommendation-form">
-            <div class="field"><label for="prompt">What kind of book are you looking for?</label><textarea id="prompt"
+        <form id="recommendation-form" action="/tensorflow-chat" method="post">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <div class="field"><label for="prompt">What kind of book are you looking for?</label><textarea id="prompt" name="prompt"
                     rows="4"
                     placeholder="For example: a practical book about backend APIs and scalable JavaScript systems."
                     required></textarea></div><button class="button" type="submit">Find books</button>

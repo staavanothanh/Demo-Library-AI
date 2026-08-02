@@ -190,6 +190,13 @@ describe("recommendation catalog recovery", () => {
     expect(getFindCalls()).toBe(2);
   });
 
+  it("rejects new work after stop without creating a replacement worker", async () => {
+    const { client, workers } = createClient();
+    await client.stop();
+    await expect(client.embed("after stop")).rejects.toThrow("shutting down");
+    expect(workers).toHaveLength(0);
+  });
+
   it("rejects pending work after exit or stop and permits a fresh worker", async () => {
     const { client, workers } = createClient();
     const first = client.embed("first");

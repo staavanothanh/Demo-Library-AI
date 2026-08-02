@@ -109,8 +109,11 @@ For Atlas Vector Search, create a `knowledge_chunks` index named by `POLICY_VECT
 
 ```powershell
 npm test
+npm run test:coverage
 npm run dev
 ```
+
+Coverage currently enforces 80% minimum global thresholds for statements, branches, functions, and lines. The in-process rate limiter is suitable for a single Node.js instance; use a shared atomic store before deploying multiple instances. The startup AI catalog refresh retries with bounded backoff and is independent of HTTP availability.
 
 Open `http://localhost:3000`.
 

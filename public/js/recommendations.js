@@ -4,6 +4,7 @@
   const result = document.querySelector("#recommendation-result");
   if (!form || !prompt || !result) return;
   const submit = form.querySelector("button[type=submit]");
+  const csrfToken = form.elements._csrf?.value || "";
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -14,7 +15,7 @@
     submit.setAttribute("aria-busy", "true");
     submit.textContent = "Searching…";
     try {
-      const response = await fetch("/tensorflow-chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ prompt: value }) });
+      const response = await fetch("/tensorflow-chat", { method: "POST", headers: { "Content-Type": "application/json", "X-CSRF-Token": csrfToken }, body: JSON.stringify({ prompt: value }) });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Unable to get recommendations.");
       const heading = document.createElement("p");

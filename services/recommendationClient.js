@@ -10,6 +10,7 @@ function createRecommendationClient({ Book, workerFactory = () => new Worker(pat
   let catalogWorkerVersion = 0;
   let catalogLoad;
   let catalogFetch;
+  let stopped = false;
   const pendingRequests = new Map();
 
   const cloneBooks = (books) => (Array.isArray(books) ? books.map((book) => ({ ...book })) : []);
@@ -29,6 +30,7 @@ function createRecommendationClient({ Book, workerFactory = () => new Worker(pat
     }
   };
   const ensureWorker = () => {
+    if (stopped) throw new Error("Recommendation worker is shutting down.");
     if (worker) return worker;
     const nextWorker = workerFactory();
     worker = nextWorker;
@@ -150,6 +152,7 @@ function createRecommendationClient({ Book, workerFactory = () => new Worker(pat
       return result.embeddings || [];
     },
     stop: async () => {
+      stopped = true;
       const currentWorker = worker;
       if (!currentWorker) return;
       worker = undefined;

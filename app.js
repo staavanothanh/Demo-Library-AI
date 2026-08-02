@@ -34,6 +34,7 @@ const { createAuthRoutes } = require("./routes/authRoutes");
 const { createCatalogRoutes } = require("./routes/catalogRoutes");
 const { createAdminRoutes } = require("./routes/adminRoutes");
 const { createRecommendationRoutes } = require("./routes/recommendationRoutes");
+const { createContentSecurityPolicy } = require("./middleware/csp");
 
 function createApp({ sessionStore, recommendationClient = createRecommendationClient({ Book }), chatbotService } = {}) {
   const app = express();
@@ -44,6 +45,7 @@ function createApp({ sessionStore, recommendationClient = createRecommendationCl
   app.set("view engine", "ejs");
   app.set("views", path.join(__dirname, "views"));
   app.use(helmet({ contentSecurityPolicy: false }));
+  app.use(createContentSecurityPolicy());
   app.use(express.static(path.join(__dirname, "public")));
   app.use(express.urlencoded({ extended: false }));
   app.use(express.json());
@@ -82,11 +84,22 @@ function createApp({ sessionStore, recommendationClient = createRecommendationCl
   const resolvedChatbotService = chatbotService || createChatbotService({ policyService, recommendationClient, provider: createOpenCodeZenProvider(), Book });
   const chatbotController = createChatbotController({ chatbotService: resolvedChatbotService });
   const aiRateLimit = Number(process.env.AI_RATE_LIMIT || 20);
-  const chatbotLimiter = createRateLimiter({ max: Number.isInteger(aiRateLimit) && aiRateLimit > 0 ? aiRateLimit : 20 });
   const authRateLimit = Number(process.env.AUTH_RATE_LIMIT || 5);
-  const loginLimiter = createRateLimiter({ max: Number.isInteger(authRateLimit) && authRateLimit > 0 ? authRateLimit : 5 });
+  const loginIpLimiter = createRateLimiter({
+    max: Number.isInteger(authRateLimit) && authRateLimit > 0 ? authRateLimit : 5,
+    key: (req) => req.ip || "unknown",
+  });
+  const loginAccountLimiter = createRateLimiter({
+    max: Number.isInteger(authRateLimit) && authRateLimit > 0 ? authRateLimit : 5,
+    key: (req) => String(req.body?.username || "").trim().toLowerCase() || "anonymous",
+  });
+  const loginLimiter = (req, res, next) => loginIpLimiter(req, res, () => loginAccountLimiter(req, res, next));
   const recommendationRateLimit = Number(process.env.RECOMMENDATION_RATE_LIMIT || aiRateLimit);
-  const recommendationLimiter = createRateLimiter({ max: Number.isInteger(recommendationRateLimit) && recommendationRateLimit > 0 ? recommendationRateLimit : 20 });
+  const recommendationLimiter = createRateLimiter({
+    max: Number.isInteger(recommendationRateLimit) && recommendationRateLimit > 0 ? recommendationRateLimit : 20,
+    key: (req) => `${req.user?.id || "anonymous"}:${req.ip || "unknown"}`,
+  });
+  const chatbotLimiter = createRateLimiter({ max: Number.isInteger(aiRateLimit) && aiRateLimit > 0 ? aiRateLimit : 20 });
 
   app.use(createAuthRoutes({ controller: authController, passport, renderForm, showValidation, csrf: csrf.requireToken, limiter: loginLimiter }));
   app.use(createCatalogRoutes({ controller: catalogController }));
@@ -94,7 +107,7 @@ function createApp({ sessionStore, recommendationClient = createRecommendationCl
   app.use(createCheckoutRoutes({ controller: checkoutController, csrf: csrf.requireToken }));
   app.use(createCommentRoutes({ controller: commentController, requireAuth, csrf: csrf.requireToken }));
   app.use(createAdminRoutes({ controller: adminController, requireAuth, requireAdmin, showValidation, csrf: csrf.requireToken }));
-  app.use(createRecommendationRoutes({ controller: recommendationController, requireAuth, validationResult, limiter: recommendationLimiter }));
+  app.use(createRecommendationRoutes({ controller: recommendationController, requireAuth, validationResult, csrf: csrf.requireToken, limiter: recommendationLimiter }));
   app.use(createChatbotRoutes({ controller: chatbotController, limiter: chatbotLimiter, csrf: csrf.requireToken }));
 
   app.use((req, res) => res.status(404).render("error", { status: 404, message: "The page you requested was not found." }));
