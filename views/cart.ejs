@@ -34,7 +34,8 @@
                             </strong>
                             <form action="/cart/items/<%= item.book._id %>/remove" method="post" data-cart-mutation>
                                 <input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="link-button"
-                                    type="submit">Remove</button></form>
+                                    type="submit">Remove</button>
+                            </form>
                         </article>
                         <% }) %>
                 </div>

@@ -16,7 +16,12 @@ function createAdminController({ Book, recommendationClient }) {
           stock: Number(req.body.stock),
           coverUrl: req.body.coverUrl?.trim() || "",
         });
-        await recommendationClient.refreshBooks();
+        try {
+          await recommendationClient.refreshBooks();
+        } catch (error) {
+          console.error(`Book persisted but AI index refresh failed: ${error.message}`);
+          return res.redirect("/admin-dashboard?message=Book added. AI index refresh is pending.");
+        }
         return res.redirect("/admin-dashboard?message=Book added and AI index refreshed.");
       } catch (error) { return next(error); }
     },

@@ -11,6 +11,11 @@ function createAdminRoutes({ controller, requireAuth, requireAdmin, showValidati
     body("description").trim().isLength({ min: 20 }).withMessage("Description must contain at least 20 characters."),
     body("price").isFloat({ min: 0 }).withMessage("Price must be a non-negative number."),
     body("stock").isInt({ min: 0 }).withMessage("Stock must be a non-negative integer."),
+    body("averageRating").custom((value) => {
+      if (value === undefined || value === null || value === "") return true;
+      const rating = typeof value === "string" || typeof value === "number" ? Number(value) : Number.NaN;
+      return Number.isFinite(rating) && String(value).trim() !== "" && rating >= 0 && rating <= 5;
+    }).withMessage("Average rating must be between 0 and 5."),
     body("coverUrl").optional({ values: "falsy" }).isURL({ protocols: ["http", "https"], require_protocol: true }).withMessage("Cover URL must be a valid HTTP(S) URL."),
     showValidation("admin-dashboard"),
   ], controller.addBook);

@@ -4,11 +4,12 @@ const {
   removeItem: removeCartItem,
   getCartCount,
   buildCartView,
+  normalizeCart,
 } = require("../services/cartService");
 
 function createCartController({ Book }) {
   const loadCart = async (req) => {
-    const cart = req.session.cart || [];
+    const cart = normalizeCart(req.session.cart);
     const ids = cart.map((item) => item.bookId);
     const books = ids.length ? await Book.find({ _id: { $in: ids } }).lean() : [];
     const view = buildCartView({ cart, books });

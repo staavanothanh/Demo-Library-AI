@@ -2,12 +2,28 @@ const mongoose = require("mongoose");
 
 const isValidBookId = (bookId) => mongoose.Types.ObjectId.isValid(bookId);
 
+function normalizeCart(cart) {
+  if (!Array.isArray(cart)) return [];
+  const quantitiesByBookId = new Map();
+  for (const item of cart) {
+    const bookId = typeof item?.bookId === "string" ? item.bookId : "";
+    const quantity = typeof item?.quantity === "number" || (typeof item?.quantity === "string" && item.quantity.trim() !== "")
+      ? Number(item.quantity)
+      : Number.NaN;
+    if (!isValidBookId(bookId) || !Number.isSafeInteger(quantity) || quantity <= 0) continue;
+    const totalQuantity = (quantitiesByBookId.get(bookId) || 0) + quantity;
+    if (!Number.isSafeInteger(totalQuantity)) return [];
+    quantitiesByBookId.set(bookId, totalQuantity);
+  }
+  return [...quantitiesByBookId].map(([bookId, quantity]) => ({ bookId, quantity }));
+}
+
 function assertBookId(bookId) {
   if (!isValidBookId(bookId)) throw new Error("Invalid book id");
 }
 
 function assertQuantity(quantity) {
-  if (!Number.isInteger(quantity) || quantity <= 0) throw new Error("Quantity must be a positive integer");
+  if (!Number.isSafeInteger(quantity) || quantity <= 0) throw new Error("Quantity must be a positive integer");
 }
 
 function assertStock(quantity, stock) {
@@ -18,31 +34,33 @@ function addItem(cart = [], bookId, quantity, stock) {
   assertBookId(bookId);
   assertQuantity(quantity);
   assertStock(quantity, stock);
-  const existing = cart.find((item) => item.bookId === bookId);
+  const normalizedCart = normalizeCart(cart);
+  const existing = normalizedCart.find((item) => item.bookId === bookId);
   const nextQuantity = (existing?.quantity || 0) + quantity;
   assertStock(nextQuantity, stock);
   return existing
-    ? cart.map((item) => item.bookId === bookId ? { ...item, quantity: nextQuantity } : { ...item })
-    : [...cart.map((item) => ({ ...item })), { bookId, quantity }];
+    ? normalizedCart.map((item) => item.bookId === bookId ? { ...item, quantity: nextQuantity } : { ...item })
+    : [...normalizedCart.map((item) => ({ ...item })), { bookId, quantity }];
 }
 
 function updateItem(cart = [], bookId, quantity, stock) {
   assertBookId(bookId);
   assertQuantity(quantity);
   assertStock(quantity, stock);
-  return cart
+  const normalizedCart = normalizeCart(cart);
+  return normalizedCart
     .filter((item) => item.bookId !== bookId)
-    .concat(cart.some((item) => item.bookId === bookId) ? [{ bookId, quantity }] : [])
+    .concat(normalizedCart.some((item) => item.bookId === bookId) ? [{ bookId, quantity }] : [])
     .map((item) => ({ ...item }));
 }
 
 function removeItem(cart = [], bookId) {
   assertBookId(bookId);
-  return cart.filter((item) => item.bookId !== bookId).map((item) => ({ ...item }));
+  return normalizeCart(cart).filter((item) => item.bookId !== bookId).map((item) => ({ ...item }));
 }
 
 function getCartCount(cart = []) {
-  return cart.reduce((total, item) => total + item.quantity, 0);
+  return normalizeCart(cart).reduce((total, item) => total + item.quantity, 0);
 }
 
 function toCents(value) {
@@ -52,10 +70,11 @@ function toCents(value) {
 }
 
 function buildCartView({ cart = [], books = [] }) {
-  const booksById = new Map(books.map((book) => [String(book._id), book]));
+  const booksById = new Map((Array.isArray(books) ? books : []).map((book) => [String(book._id), book]));
+  const normalizedCart = normalizeCart(cart);
   const items = [];
-  let removedCount = 0;
-  for (const entry of cart) {
+  let removedCount = Array.isArray(cart) ? cart.length - normalizedCart.length : 0;
+  for (const entry of normalizedCart) {
     const book = booksById.get(String(entry.bookId));
     if (!book) {
       removedCount += 1;
@@ -75,6 +94,7 @@ function buildCartView({ cart = [], books = [] }) {
 module.exports = {
   addItem,
   updateItem,
+  normalizeCart,
   removeItem,
   getCartCount,
   isValidBookId,

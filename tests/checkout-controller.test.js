@@ -17,6 +17,37 @@ describe("fake checkout", () => {
     expect(book.stock).toBe(5);
   });
 
+  it("rejects duplicate cart lines whose aggregate quantity exceeds stock", async () => {
+    const id = new mongoose.Types.ObjectId().toString();
+    const cart = [
+      { bookId: id, quantity: 2 },
+      { bookId: id, quantity: 2 },
+    ];
+    const Book = {
+      find: () => ({
+        lean: async () => [{ _id: id, title: "Demo", price: 10, stock: 3 }],
+      }),
+    };
+    const controller = createCheckoutController({ Book });
+    const req = {
+      get: () => "application/json",
+      session: { cart },
+    };
+    const response = {
+      status: (code) => {
+        response.statusCode = code;
+        return response;
+      },
+      json: (body) => body,
+    };
+
+    const result = await controller.checkout(req, response, (error) => { throw error; });
+
+    expect(response.statusCode).toBe(409);
+    expect(result).toEqual({ error: "Some cart items are unavailable or exceed current stock." });
+    expect(req.session.cart).toEqual(cart);
+  });
+
   it("returns JSON for explicit checkout API requests", async () => {
     const id = new mongoose.Types.ObjectId().toString();
     const book = { _id: id, title: "Demo", price: 10, stock: 5 };

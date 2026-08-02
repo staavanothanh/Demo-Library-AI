@@ -6,12 +6,16 @@ const {
 function createAuthController({ User, bcrypt }) {
   return {
     register: async (req, res, next) => {
+      let username;
       try {
-        const username = req.body.username.trim().toLowerCase();
+        username = req.body.username.trim().toLowerCase();
         if (await User.exists({ username })) return res.status(409).render("register", { errors: [{ msg: "That username is already in use." }], values: { username } });
         await User.create({ username, passwordHash: await bcrypt.hash(req.body.password, 12), role: "member" });
         return res.redirect("/login?message=Registration successful. Please sign in.");
-      } catch (error) { return next(error); }
+      } catch (error) {
+        if (error?.code === 11000) return res.status(409).render("register", { errors: [{ msg: "That username is already in use." }], values: { username } });
+        return next(error);
+      }
     },
     afterLogin: (req, res) => res.redirect("/books"),
     logout: (req, res, next) => {

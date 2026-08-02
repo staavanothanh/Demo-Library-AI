@@ -83,14 +83,18 @@ function createApp({ sessionStore, recommendationClient = createRecommendationCl
   const chatbotController = createChatbotController({ chatbotService: resolvedChatbotService });
   const aiRateLimit = Number(process.env.AI_RATE_LIMIT || 20);
   const chatbotLimiter = createRateLimiter({ max: Number.isInteger(aiRateLimit) && aiRateLimit > 0 ? aiRateLimit : 20 });
+  const authRateLimit = Number(process.env.AUTH_RATE_LIMIT || 5);
+  const loginLimiter = createRateLimiter({ max: Number.isInteger(authRateLimit) && authRateLimit > 0 ? authRateLimit : 5 });
+  const recommendationRateLimit = Number(process.env.RECOMMENDATION_RATE_LIMIT || aiRateLimit);
+  const recommendationLimiter = createRateLimiter({ max: Number.isInteger(recommendationRateLimit) && recommendationRateLimit > 0 ? recommendationRateLimit : 20 });
 
-  app.use(createAuthRoutes({ controller: authController, passport, renderForm, showValidation, csrf: csrf.requireToken }));
+  app.use(createAuthRoutes({ controller: authController, passport, renderForm, showValidation, csrf: csrf.requireToken, limiter: loginLimiter }));
   app.use(createCatalogRoutes({ controller: catalogController }));
   app.use(createCartRoutes({ controller: cartController, csrf: csrf.requireToken }));
   app.use(createCheckoutRoutes({ controller: checkoutController, csrf: csrf.requireToken }));
   app.use(createCommentRoutes({ controller: commentController, requireAuth, csrf: csrf.requireToken }));
   app.use(createAdminRoutes({ controller: adminController, requireAuth, requireAdmin, showValidation, csrf: csrf.requireToken }));
-  app.use(createRecommendationRoutes({ controller: recommendationController, requireAuth, validationResult }));
+  app.use(createRecommendationRoutes({ controller: recommendationController, requireAuth, validationResult, limiter: recommendationLimiter }));
   app.use(createChatbotRoutes({ controller: chatbotController, limiter: chatbotLimiter, csrf: csrf.requireToken }));
 
   app.use((req, res) => res.status(404).render("error", { status: 404, message: "The page you requested was not found." }));

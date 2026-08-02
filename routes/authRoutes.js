@@ -5,7 +5,7 @@ const {
   restoreSupportedSessionState,
 } = require("../services/sessionTransitionState");
 
-function createAuthRoutes({ controller, passport, renderForm, showValidation, csrf = (req, res, next) => next() }) {
+function createAuthRoutes({ controller, passport, renderForm, showValidation, csrf = (req, res, next) => next(), limiter = (req, res, next) => next() }) {
   const router = express.Router();
   const captureSessionState = (req, res, next) => {
     req.sessionTransitionState = snapshotSupportedSessionState(req.session);
@@ -23,7 +23,7 @@ function createAuthRoutes({ controller, passport, renderForm, showValidation, cs
     showValidation("register"),
   ], controller.register);
   router.get("/login", renderForm("login"));
-  router.post("/login", csrf, captureSessionState, passport.authenticate("local", { failureRedirect: "/login?message=Invalid username or password." }), restoreSessionState, controller.afterLogin);
+  router.post("/login", csrf, limiter, captureSessionState, passport.authenticate("local", { failureRedirect: "/login?message=Invalid username or password." }), restoreSessionState, controller.afterLogin);
   router.post("/logout", csrf, controller.logout);
   return router;
 }
