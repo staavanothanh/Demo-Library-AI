@@ -1,7 +1,17 @@
+const {
+  POLICY_CANONICAL_ORDER,
+  TOPIC_TO_SOURCE,
+  detectPolicyTopics,
+  hasPolicySignal,
+  normalizeForMatching,
+} = require("./chatbotLexicon");
+
 const DEFAULT_EMBEDDING_DIMENSION = 512;
 const DEFAULT_THRESHOLD = 0.6;
 const DEFAULT_LIMIT = 5;
-const DEFAULT_OVERVIEW_LIMIT = 8;
+const DEFAULT_OVERVIEW_LIMIT = 6;
+const DEFAULT_TOPIC_LIMIT = 3;
+const DEFAULT_VECTOR_RELATIVE_MARGIN = 0.08;
 
 function createPolicyError(code, message) {
   const error = new Error(message);
@@ -39,7 +49,23 @@ function isValidEmbedding(embedding, dimension = DEFAULT_EMBEDDING_DIMENSION) {
 }
 
 function isPolicyOverviewQuery(query) {
-  return /tell me about (?:the )?polic(?:y|ies)|what (?:are )?(?:your )?store polic(?:y|ies)|what polic(?:y|ies) do you have|hãy cho tôi biết chính sách|các chính sách của cửa hàng là gì/i.test(String(query || "").trim());
+  const { normalized, folded } = normalizeForMatching(query);
+  if (detectPolicyTopics(query).length) return false;
+  return /(?:^|\s)(?:tell me about (?:the )?polic(?:y|ies)|what (?:are )?(?:your )?store polic(?:y|ies)|what polic(?:y|ies) do you have)(?:\s|$)/i.test(normalized)
+    || /(?:^|\s)(?:hay cho toi biet chinh sach|cac chinh sach cua cua hang|cho toi biet chinh sach)(?:\s|$)/i.test(folded);
+}
+
+function resolvePolicyRoute(query) {
+  const topics = detectPolicyTopics(query);
+  if (topics.length) {
+    return {
+      mode: "topic",
+      topics,
+      sources: topics.map((topic) => TOPIC_TO_SOURCE[topic]).sort((left, right) => POLICY_CANONICAL_ORDER.indexOf(left) - POLICY_CANONICAL_ORDER.indexOf(right)),
+    };
+  }
+  if (isPolicyOverviewQuery(query) || hasPolicySignal(query)) return { mode: "overview", topics: [], sources: [...POLICY_CANONICAL_ORDER] };
+  return { mode: "unknown", topics: [], sources: [] };
 }
 
 function isValidPolicyChunk(chunk, dimension, requireEmbedding = true) {
@@ -99,6 +125,8 @@ function createPolicyService({
   vectorSearch,
   embeddingDimension = DEFAULT_EMBEDDING_DIMENSION,
   overviewLimit = DEFAULT_OVERVIEW_LIMIT,
+  topicLimit = DEFAULT_TOPIC_LIMIT,
+  vectorRelativeMargin = DEFAULT_VECTOR_RELATIVE_MARGIN,
   cacheTtlMs = 0,
 } = {}) {
   const safeDimension = Number.isInteger(embeddingDimension) && embeddingDimension > 0
@@ -106,6 +134,10 @@ function createPolicyService({
     : DEFAULT_EMBEDDING_DIMENSION;
   const safeThreshold = Number.isFinite(Number(threshold)) ? clampScore(threshold) : DEFAULT_THRESHOLD;
   const safeOverviewLimit = Number.isInteger(overviewLimit) && overviewLimit > 0 ? overviewLimit : DEFAULT_OVERVIEW_LIMIT;
+  const safeTopicLimit = Number.isInteger(topicLimit) && topicLimit > 0 ? topicLimit : DEFAULT_TOPIC_LIMIT;
+  const safeVectorRelativeMargin = Number.isFinite(Number(vectorRelativeMargin)) && Number(vectorRelativeMargin) >= 0
+    ? Number(vectorRelativeMargin)
+    : DEFAULT_VECTOR_RELATIVE_MARGIN;
   const safeCacheTtlMs = Number.isFinite(Number(cacheTtlMs)) && Number(cacheTtlMs) > 0 ? Number(cacheTtlMs) : 0;
   let cachedChunks;
   let cachedAt = 0;
@@ -133,13 +165,40 @@ function createPolicyService({
     cachedAt = 0;
   };
 
-  const retrieveOverview = async () => {
-    const chunks = (await loadChunks()).slice(0, safeOverviewLimit);
-    return { chunks, fallback: true, overview: true, refused: chunks.length === 0 };
+  const sourceRank = (source) => {
+    const rank = POLICY_CANONICAL_ORDER.indexOf(source);
+    return rank < 0 ? POLICY_CANONICAL_ORDER.length : rank;
+  };
+
+  const sortEvidence = (chunks) => [...chunks].sort((left, right) => {
+    const sourceOrder = sourceRank(left.source) - sourceRank(right.source);
+    if (sourceOrder !== 0) return sourceOrder;
+    return Number(left.chunkIndex || 0) - Number(right.chunkIndex || 0);
+  });
+
+  const toResult = ({ chunks, mode, topics = [], fallback = true, overview = false }) => {
+    const evidence = Array.isArray(chunks) ? chunks : [];
+    const sources = [...new Set(evidence.map((chunk) => chunk?.source).filter((source) => typeof source === "string"))]
+    return { chunks: evidence, sources, mode, topics, fallback, overview, refused: evidence.length === 0 };
+  };
+
+  const retrieveKnownRoute = async (route) => {
+    const available = await loadChunks();
+    if (route.mode === "overview") {
+      const representatives = route.sources
+        .map((source) => available.find((chunk) => chunk.source === source))
+        .filter(Boolean)
+        .slice(0, safeOverviewLimit);
+      return toResult({ chunks: representatives, mode: "overview", overview: true });
+    }
+
+    const selected = route.sources.flatMap((source) => sortEvidence(available.filter((chunk) => chunk.source === source)).slice(0, safeTopicLimit));
+    return toResult({ chunks: selected, mode: "topic", topics: route.topics });
   };
 
   const retrieve = async (query) => {
-    if (isPolicyOverviewQuery(query)) return retrieveOverview();
+    const route = resolvePolicyRoute(query);
+    if (route.mode === "topic" || route.mode === "overview") return retrieveKnownRoute(route);
 
     let embedding;
     try {
@@ -154,26 +213,35 @@ function createPolicyService({
     try {
       if (vectorSearch) {
         const vectorResults = await vectorSearch(embedding);
-        const chunks = (Array.isArray(vectorResults) ? vectorResults : [])
+        const ranked = (Array.isArray(vectorResults) ? vectorResults : [])
           .filter((chunk) => isValidPolicyChunk(chunk, safeDimension, false))
           .map((chunk) => ({ ...chunk, rawScore: Number(chunk.score), score: clampScore(chunk.score) }))
           .filter((chunk) => chunk.score >= safeThreshold)
-          .slice(0, DEFAULT_LIMIT);
-        if (chunks.length) return { chunks, fallback: false, overview: false, refused: false };
+          .sort((left, right) => right.score - left.score || sourceRank(left.source) - sourceRank(right.source) || Number(left.chunkIndex || 0) - Number(right.chunkIndex || 0));
+        if (ranked.length) {
+          const topScore = ranked[0].score;
+          const chunks = ranked
+            .filter((chunk, index) => index === 0 || topScore - chunk.score <= safeVectorRelativeMargin)
+            .slice(0, DEFAULT_LIMIT);
+          return toResult({ chunks, mode: "vector", fallback: false });
+        }
       }
     } catch (error) {
       console.warn("Policy vector search unavailable; using memory fallback.");
     }
 
-    const chunks = (await loadChunks())
+    const ranked = (await loadChunks())
       .map((chunk) => {
         const rawScore = cosineSimilarity(embedding, chunk.embedding);
         return { ...chunk, rawScore, score: normalizeCosineSimilarity(rawScore) };
       })
       .filter((chunk) => chunk.score >= safeThreshold)
-      .sort((left, right) => right.score - left.score)
+      .sort((left, right) => right.score - left.score || sourceRank(left.source) - sourceRank(right.source) || Number(left.chunkIndex || 0) - Number(right.chunkIndex || 0));
+    const topScore = ranked[0]?.score;
+    const chunks = ranked
+      .filter((chunk, index) => index === 0 || topScore - chunk.score <= safeVectorRelativeMargin)
       .slice(0, DEFAULT_LIMIT);
-    return { chunks, fallback: true, overview: false, refused: chunks.length === 0 };
+    return toResult({ chunks, mode: "memory" });
   };
 
   return {
@@ -183,6 +251,7 @@ function createPolicyService({
     cosineSimilarity,
     normalizeCosineSimilarity,
     isPolicyOverviewQuery,
+    resolvePolicyRoute,
   };
 }
 
@@ -193,4 +262,5 @@ module.exports = {
   normalizeCosineSimilarity,
   isValidEmbedding,
   isPolicyOverviewQuery,
+  resolvePolicyRoute,
 };

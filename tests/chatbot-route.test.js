@@ -1,4 +1,5 @@
 const express = require("express");
+const session = require("express-session");
 const request = require("supertest");
 const { createChatbotController } = require("../controllers/chatbotController");
 const { createChatbotRoutes } = require("../routes/chatbotRoutes");
@@ -18,6 +19,59 @@ describe("public chatbot endpoint", () => {
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual({ answer: "Answer: How do you ship?", intent: "policy", sources: ["shipping.md"], books: [] });
+  });
+
+  it("persists only a validated language preference across requests", async () => {
+    const received = [];
+    const app = express();
+    app.use(express.json());
+    app.use(session({ secret: "language-preference-test", resave: false, saveUninitialized: true }));
+    app.use(createChatbotRoutes({
+      controller: createChatbotController({
+        chatbotService: {
+          chat: async ({ preferredLanguage }) => {
+            received.push(preferredLanguage);
+            return { answer: "ok", intent: "conversation", sources: [], books: [], preferredLanguage: received.length === 1 ? "vi" : undefined };
+          },
+        },
+      }),
+    }));
+
+    const agent = request.agent(app);
+    await agent.post("/api/ai/chat").send({ message: "reply in Vietnamese" });
+    await agent.post("/api/ai/chat").send({ message: "what can you do?" });
+
+    expect(received).toEqual([undefined, "vi"]);
+  });
+
+  it("exposes only allowlisted complete generation metadata", async () => {
+    const app = createApp({
+      chat: async () => ({
+        answer: "ok",
+        intent: "conversation",
+        sources: [],
+        books: [],
+        generation: {
+          provider: "opencode-zen",
+          model: "test-model",
+          finishReason: "stop",
+          usage: { promptTokens: 2, completionTokens: 3, totalTokens: 5 },
+          apiKey: "do-not-expose",
+          reasoningContent: "do-not-expose",
+        },
+      }),
+    });
+
+    const response = await request(app).post("/api/ai/chat").send({ message: "hello" });
+
+    expect(response.status).toBe(200);
+    expect(response.body.generation).toEqual({
+      provider: "opencode-zen",
+      model: "test-model",
+      finishReason: "stop",
+      usage: { promptTokens: 2, completionTokens: 3, totalTokens: 5 },
+    });
+    expect(response.text).not.toMatch(/apiKey|reasoningContent|do-not-expose/i);
   });
 
   it("runs CSRF protection before the chatbot controller", async () => {
@@ -87,6 +141,7 @@ describe("public chatbot endpoint", () => {
     ["RATE_LIMITED", 429],
     ["AUTH_FAILED", 502],
     ["INVALID_RESPONSE", 502],
+    ["TRUNCATED_RESPONSE", 502],
     ["UPSTREAM_ERROR", 502],
     ["CATALOG_EMPTY", 503],
     ["MODEL_LOAD_FAILED", 503],

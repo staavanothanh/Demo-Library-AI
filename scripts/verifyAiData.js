@@ -159,7 +159,7 @@ function formatDiagnostics(result) {
 }
 
 async function main() {
-  require("dotenv").config();
+  require("dotenv").config({ quiet: true });
   configureRuntimeDns();
 
   if (!process.env.MONGODB_URI) throw new Error("MONGODB_URI is required.");

@@ -1,5 +1,6 @@
 const tf = require("@tensorflow/tfjs");
 const use = require("@tensorflow-models/universal-sentence-encoder");
+const { normalizeRetrievalText } = require("./retrievalTextNormalizer");
 
 const EMBEDDING_DIMENSION = 512;
 
@@ -99,7 +100,7 @@ async function loadBooks(books) {
 
   const encoder = await loadModel();
   const nextBooks = books.map((book) => ({ ...book, _id: book._id.trim() }));
-  const texts = nextBooks.map((book) => `${book.title || ""}. ${book.authors || ""}. ${book.genre || ""}. ${book.description || ""}`.trim());
+  const texts = nextBooks.map((book) => normalizeRetrievalText(`${book.title || ""}. ${book.authors || ""}. ${book.genre || ""}. ${book.description || ""}`));
   let result;
   try {
     result = await embedWithModel(encoder, texts);
@@ -125,7 +126,7 @@ async function recommend(prompt) {
   const encoder = await loadModel();
   let queryEmbedding;
   try {
-    queryEmbedding = await encoder.embed([prompt]);
+    queryEmbedding = await encoder.embed([normalizeRetrievalText(prompt)]);
     const values = await queryEmbedding.array();
     if (!isValidEmbeddingMatrix(values, 1)) {
       throw createAiError("EMBEDDING_FAILED", `Embeddings must contain ${EMBEDDING_DIMENSION} finite values per text.`);
@@ -140,9 +141,10 @@ async function recommend(prompt) {
       throw createAiError("RECOMMENDATION_FAILED", "The recommendation model returned invalid scores.");
     }
     const books = cachedBooks
-      .map((book, index) => ({ _id: String(book._id), title: book.title, authors: book.authors, genre: book.genre, score: Number(scoreList[index].toFixed(3)) }))
-      .sort((left, right) => right.score - left.score)
-      .slice(0, 5);
+      .map((book, index) => ({ _id: String(book._id), title: book.title, authors: book.authors, genre: book.genre, rawScore: Number(scoreList[index]) }))
+      .sort((left, right) => right.rawScore - left.rawScore || left._id.localeCompare(right._id))
+      .slice(0, 5)
+      .map(({ rawScore, ...book }) => ({ ...book, score: Number(rawScore.toFixed(3)) }));
     return { response: books.length ? "Here are books that best match your request." : "No matching books were found.", books };
   } catch (error) {
     setReadiness(error.code === "CATALOG_EMPTY" ? "empty" : "failed", { lastErrorCode: error.code || "RECOMMENDATION_FAILED" });

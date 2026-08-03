@@ -138,15 +138,20 @@ Interactive mode:
 npm run chatbot:cli
 ```
 
-Inside the session, use `/help`, `/status`, `/clear`, or `/exit`. `/status` prints only recommendation readiness and the public provider/model name.
+Inside the session, use `/help`, `/status`, `/clear`, or `/exit`. `/status` prints only recommendation readiness, the public provider/model name, and (when set) `en`/`vi`. A command such as `reply in Vietnamese` persists the validated language preference for the rest of that interactive process. `/clear` removes only the four-item chat history and retains the language preference; `--no-history` also keeps the language preference while sending an empty history on every turn.
 
 Machine-readable one-shot mode:
 
 ```powershell
 npm run chatbot:ask -- --prompt "what is your shipping policy?" --json
 npm run chatbot:ask -- --prompt "recommend for me a book related to data" --json
+npm run chatbot:ask -- --prompt "Chính sách vận chuyển của bạn là gì?" --json
 ```
 
-The final result line starts with `CHATBOT_RESULT_JSON=`. Success results contain `ok`, `answer`, `intent`, `sources`, and canonical `books`. Failure results contain safe `code`, `stage`, `intent`, `candidateCount`, `canonicalCount`, and `message`; they never include connection strings, credentials, headers, cookies, session history, stack traces, or raw upstream payloads. Exit code `0` means the chatbot returned a result; exit code `1` means validation or runtime failure.
+The final result line starts with `CHATBOT_RESULT_JSON=`. Success results contain `ok`, `answer`, `intent`, `sources`, and canonical `books`; complete provider responses may add allowlisted `generation` metadata (`provider`, `model`, `finishReason`, and finite token counts). One-shot mode starts with no preference and never persists state to disk. Failure results contain safe `code`, `stage`, `intent`, `candidateCount`, `canonicalCount`, and `message`; they never include connection strings, credentials, headers, cookies, session history, stack traces, or raw upstream payloads. Exit code `0` means the chatbot returned a result; exit code `1` means validation or runtime failure.
+
+Policy topics use deterministic English/Vietnamese accented and unaccented aliases to choose a narrow canonical source (`shipping.md`, `returns.md`, and so on) before semantic retrieval. The indexed policy corpus remains English: Vietnamese grounded fallbacks use a fixed Vietnamese preface followed by an exact English excerpt, not an unreviewed machine translation. Recommendation retrieval appends bounded bilingual concept labels to its private embedding text while preserving the original prompt and canonical book records.
+
+OpenCode Zen uses at most two total attempts for transient network, timeout, rate-limit, and 5xx failures within the configured request deadline. A response stopped by the provider's token limit is reported as `TRUNCATED_RESPONSE` and is never exposed as partial text. When policy evidence or canonical books are available, the chatbot returns a deterministic grounded fallback instead of discarding that evidence; with no grounding it refuses safely.
 
 > The administrator account is created or updated at server startup from `ADMIN_USERNAME` and `ADMIN_PASSWORD`. Sign in with those values to access `/admin-dashboard`.

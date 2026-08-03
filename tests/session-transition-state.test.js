@@ -10,6 +10,7 @@ describe("session transition state", () => {
     const secondBookId = new mongoose.Types.ObjectId().toString();
     const session = {
       csrfToken: "a".repeat(64),
+      chatPreferredLanguage: "vi",
       cart: [
         { bookId: firstBookId, quantity: 2, price: 99, injected: true },
         { bookId: secondBookId, quantity: 1 },
@@ -28,6 +29,7 @@ describe("session transition state", () => {
 
     expect(restored).toEqual({
       csrfToken: "a".repeat(64),
+      chatPreferredLanguage: "vi",
       cart: [
         { bookId: firstBookId, quantity: 2 },
         { bookId: secondBookId, quantity: 1 },
@@ -43,6 +45,7 @@ describe("session transition state", () => {
       chatHistory: ["do not copy"],
       returnTo: "/admin",
       role: "admin",
+      chatPreferredLanguage: "fr",
       passport: { user: "old-user" },
     });
     const restored = { existing: true };

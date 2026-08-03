@@ -247,6 +247,53 @@ describe("chatbot CLI contracts", () => {
     expect(output.value).not.toMatch(/MONGODB_URI|apiKey|Authorization|Bearer|secret|mongodb\+srv|cookie|session id/i);
   });
 
+  it("persists language in interactive mode, including across /clear and --no-history", async () => {
+    const received = [];
+    const service = {
+      chat: vi.fn(async ({ preferredLanguage }) => {
+        received.push(preferredLanguage);
+        return { answer: "ok", intent: "conversation", sources: [], books: [], preferredLanguage: received.length === 1 ? "vi" : undefined };
+      }),
+    };
+    const readline = createReadline(["reply in Vietnamese", "/clear", "what can you do?", "/exit"]);
+    const output = createOutput();
+    const dependencies = createDependencies({ service, readline });
+
+    await expect(runCli({ argv: ["--no-history"], dependencies, output })).resolves.toBe(0);
+
+    expect(received).toEqual([undefined, "vi"]);
+    expect(output.value).toMatch(/language preference retained/i);
+  });
+
+  it("includes only sanitized complete generation metadata in one-shot JSON", async () => {
+    const output = createOutput();
+    const dependencies = createDependencies({
+      service: {
+        chat: vi.fn(async () => ({
+          ...successResult("ok", "conversation"),
+          generation: {
+            provider: "opencode-zen",
+            model: "test-model",
+            finishReason: "stop",
+            usage: { promptTokens: 1, completionTokens: 2, totalTokens: 3 },
+            apiKey: "secret",
+          },
+        })),
+      },
+    });
+
+    await expect(runCli({ argv: ["--once", "--prompt", "hello", "--json"], dependencies, output })).resolves.toBe(0);
+
+    const result = JSON.parse(output.value.trim().replace(/^CHATBOT_RESULT_JSON=/, ""));
+    expect(result.generation).toEqual({
+      provider: "opencode-zen",
+      model: "test-model",
+      finishReason: "stop",
+      usage: { promptTokens: 1, completionTokens: 2, totalTokens: 3 },
+    });
+    expect(output.value).not.toMatch(/apiKey|secret/i);
+  });
+
   it("supports --no-history without retaining or sending prior turns", async () => {
     const histories = [];
     const service = {

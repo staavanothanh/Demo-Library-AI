@@ -1,4 +1,5 @@
 const readline = require("node:readline/promises");
+const { sanitizeGeneration } = require("../services/chatbotService");
 
 const MAX_MESSAGE_LENGTH = 2000;
 const MAX_HISTORY_ITEMS = 4;
@@ -27,6 +28,7 @@ const ERROR_MESSAGES = {
   UPSTREAM_UNAVAILABLE: "The chatbot provider is temporarily unavailable.",
   UPSTREAM_ERROR: "The chatbot provider returned an error.",
   INVALID_RESPONSE: "The chatbot provider returned an invalid response.",
+  TRUNCATED_RESPONSE: "The chatbot provider returned an incomplete response.",
   CATALOG_EMPTY: "Book recommendations are unavailable because the catalog is empty.",
   CATALOG_INVALID: "Book recommendations are unavailable because the catalog is invalid.",
   MODEL_LOAD_FAILED: "Book recommendations are temporarily unavailable while the AI model loads.",
@@ -34,6 +36,24 @@ const ERROR_MESSAGES = {
   EMBEDDING_INVALID: "The chatbot could not process that request right now.",
   RECOMMENDATION_FAILED: "Book recommendations are temporarily unavailable.",
   CANONICAL_LOOKUP_FAILED: "The canonical book lookup could not be completed.",
+};
+
+const ERROR_MESSAGES_VI = {
+  NOT_CONFIGURED: "Nhà cung cấp chatbot chưa được cấu hình.",
+  RATE_LIMITED: "Nhà cung cấp chatbot đang tạm giới hạn yêu cầu.",
+  AUTH_FAILED: "Xác thực nhà cung cấp chatbot thất bại.",
+  TIMEOUT: "Yêu cầu tới nhà cung cấp chatbot đã hết thời gian.",
+  UPSTREAM_UNAVAILABLE: "Nhà cung cấp chatbot hiện tạm thời không khả dụng.",
+  UPSTREAM_ERROR: "Nhà cung cấp chatbot trả về lỗi.",
+  INVALID_RESPONSE: "Nhà cung cấp chatbot trả về phản hồi không hợp lệ.",
+  TRUNCATED_RESPONSE: "Nhà cung cấp chatbot trả về phản hồi chưa hoàn chỉnh.",
+  CATALOG_EMPTY: "Không thể gợi ý sách vì danh mục đang trống.",
+  CATALOG_INVALID: "Không thể gợi ý sách vì danh mục không hợp lệ.",
+  MODEL_LOAD_FAILED: "Không thể gợi ý sách trong lúc mô hình AI đang tải.",
+  EMBEDDING_FAILED: "Chatbot không thể xử lý yêu cầu lúc này.",
+  EMBEDDING_INVALID: "Chatbot không thể xử lý yêu cầu lúc này.",
+  RECOMMENDATION_FAILED: "Tạm thời không thể gợi ý sách.",
+  CANONICAL_LOOKUP_FAILED: "Không thể hoàn tất tra cứu sách chuẩn.",
 };
 
 const READ_ONLY_CONNECTION_OPTIONS = Object.freeze({
@@ -90,12 +110,15 @@ function normalizeBook(book = {}) {
 }
 
 function normalizeResult(result = {}) {
-  return {
+  const normalized = {
     answer: typeof result.answer === "string" ? result.answer : String(result.answer ?? ""),
     intent: ALLOWED_INTENTS.has(result.intent) ? result.intent : "unknown",
     sources: Array.isArray(result.sources) ? result.sources.filter((source) => typeof source === "string") : [],
     books: Array.isArray(result.books) ? result.books.map(normalizeBook) : [],
   };
+  const generation = sanitizeGeneration(result.generation);
+  if (generation) normalized.generation = generation;
+  return normalized;
 }
 
 function safeCode(code) {
@@ -123,7 +146,7 @@ function normalizeError(error, fallback = {}) {
     intent: safeIntent(error?.intent || fallback.intent),
     candidateCount: safeCount(error?.candidateCount ?? fallback.candidateCount),
     canonicalCount: safeCount(error?.canonicalCount ?? fallback.canonicalCount),
-    message: ERROR_MESSAGES[code] || "The bookstore assistant is temporarily unavailable.",
+    message: (error?.responseLanguage === "vi" ? ERROR_MESSAGES_VI[code] : ERROR_MESSAGES[code]) || "The bookstore assistant is temporarily unavailable.",
   };
 }
 
@@ -141,7 +164,7 @@ function formatInteractiveResult(result) {
   ].join("\n");
 }
 
-function formatStatus(runtime, recommendationClient) {
+function formatStatus(runtime, recommendationClient, preferredLanguage) {
   const status = typeof recommendationClient?.getStatus === "function" ? recommendationClient.getStatus() : {};
   const provider = runtime?.provider || {};
   return JSON.stringify({
@@ -151,6 +174,7 @@ function formatStatus(runtime, recommendationClient) {
       catalogVersion: safeCount(status.catalogVersion),
       lastErrorCode: status.lastErrorCode ? safeCode(status.lastErrorCode) : undefined,
     },
+    ...(preferredLanguage === "en" || preferredLanguage === "vi" ? { language: preferredLanguage } : {}),
     provider: typeof provider.provider === "string" ? provider.provider : "opencode-zen",
     model: typeof provider.config?.model === "string" ? provider.config.model : "unknown",
   });
@@ -236,17 +260,22 @@ function createRealDependencies() {
   const { createChatbotRuntime } = require("../services/chatbotRuntime");
   const { configureRuntimeDns } = require("../services/runtimeDns");
   configureRuntimeDns();
+  const logger = {
+    info: (message) => process.stderr.write(`${String(message)}\n`),
+    warn: (message) => process.stderr.write(`${String(message)}\n`),
+  };
   return {
     Book,
     KnowledgeChunk,
     connect: () => connectChatbotDatabase({ mongoose, uri: process.env.MONGODB_URI }),
     disconnect: () => mongoose.disconnect(),
+    logger,
     createRecommendationClient: ({ Book: catalog }) => createRecommendationClient({ Book: catalog }),
     createRuntime: (options) => createChatbotRuntime(options),
   };
 }
 
-async function runInteractive({ runtime, recommendationClient, readlineInterface, output, noHistory, signalState }) {
+async function runInteractive({ runtime, recommendationClient, readlineInterface, output, noHistory, signalState, languageState = { value: undefined } }) {
   let history = [];
   writeLine(output, "Direct chatbot CLI. Type /help for commands.");
   while (!signalState.triggered) {
@@ -265,12 +294,12 @@ async function runInteractive({ runtime, recommendationClient, readlineInterface
       continue;
     }
     if (command.toLowerCase() === "/status") {
-      writeLine(output, `STATUS_JSON=${formatStatus(runtime, recommendationClient)}`);
+      writeLine(output, `STATUS_JSON=${formatStatus(runtime, recommendationClient, languageState.value)}`);
       continue;
     }
     if (command.toLowerCase() === "/clear") {
       history = [];
-      writeLine(output, "History cleared.");
+      writeLine(output, languageState.value ? `History cleared. Language preference retained (${languageState.value}).` : "History cleared. Language preference retained.");
       continue;
     }
     if (command.toLowerCase() === "/exit") break;
@@ -282,8 +311,9 @@ async function runInteractive({ runtime, recommendationClient, readlineInterface
     }
     const requestHistory = noHistory ? [] : history;
     try {
-      const result = await runtime.chatbotService.chat({ message: validation.message, history: requestHistory });
+      const result = await runtime.chatbotService.chat({ message: validation.message, history: requestHistory, preferredLanguage: languageState.value });
       writeLine(output, formatInteractiveResult(result));
+      if (result?.preferredLanguage === "en" || result?.preferredLanguage === "vi") languageState.value = result.preferredLanguage;
       if (!noHistory) history = updateHistory(history, validation.message, normalizeResult(result));
     } catch (error) {
       writeLine(output, `Error: ${normalizeError(error).message}`);
@@ -334,12 +364,19 @@ async function runCli({ argv = [], input = process.stdin, output = process.stdou
     args.prompt = validation.message;
   }
 
-  const resolvedDependencies = dependencies || createRealDependencies();
+  let resolvedDependencies;
+  try {
+    resolvedDependencies = dependencies || createRealDependencies();
+  } catch (error) {
+    if (once) writeLine(output, formatResultJson(normalizeError(error)));
+    return 1;
+  }
   let recommendationClient;
   let runtime;
   let readlineInterface;
   let runtimeError;
   let resultPayload;
+  const languageState = { value: undefined };
   const cleanup = createCleanup({
     get readlineInterface() { return readlineInterface; },
     get recommendationClient() { return recommendationClient; },
@@ -367,14 +404,14 @@ async function runCli({ argv = [], input = process.stdin, output = process.stdou
 
     if (once) {
       const history = [];
-      const result = await runtime.chatbotService.chat({ message: args.prompt, history });
+      const result = await runtime.chatbotService.chat({ message: args.prompt, history, preferredLanguage: undefined });
       resultPayload = { ok: true, ...normalizeResult(result) };
     } else {
       if (typeof resolvedDependencies.createReadline !== "function") {
         resolvedDependencies.createReadline = (options) => readline.createInterface(options);
       }
       readlineInterface = resolvedDependencies.createReadline({ input, output, terminal: Boolean(input?.isTTY && output?.isTTY) });
-      return await runInteractive({ runtime, recommendationClient, readlineInterface, output, noHistory: args.noHistory, signalState });
+      return await runInteractive({ runtime, recommendationClient, readlineInterface, output, noHistory: args.noHistory, signalState, languageState });
     }
   } catch (error) {
     runtimeError = error;

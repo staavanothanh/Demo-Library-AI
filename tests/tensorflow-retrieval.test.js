@@ -71,6 +71,54 @@ describe("TensorFlow retrieval boundary", () => {
     await expect(loadBooks([{ _id: "book-1", title: "JavaScript" }])).rejects.toMatchObject({ code: "EMBEDDING_FAILED" });
   });
 
+  it("uses the same bounded bilingual concept suffix for catalog and query retrieval", async () => {
+    const captured = [];
+    loadMock.mockResolvedValueOnce({
+      embed: async (texts) => {
+        captured.push(...texts);
+        return tf.tensor2d(texts.map(embeddingFor), [texts.length, 512]);
+      },
+    });
+
+    const canonical = {
+      _id: "book-1",
+      title: "Node.js and MongoDB",
+      authors: "Author",
+      genre: "Software Engineering",
+      description: "A practical guide",
+    };
+    await loadBooks([canonical]);
+    await recommend("  Lập trình Node.js cho người mới bắt đầu về dữ liệu  ");
+
+    expect(captured[0]).toContain("Node.js and MongoDB");
+    expect(captured[0]).toContain("Concepts:");
+    expect(captured[0]).toMatch(/programming|software engineering|practical/i);
+    expect(captured[1]).toContain("Lập trình Node.js cho người mới bắt đầu về dữ liệu");
+    expect(captured[1]).toMatch(/Concepts:.*programming/);
+    expect(captured[1]).toMatch(/data/);
+    expect(canonical).toEqual({
+      _id: "book-1",
+      title: "Node.js and MongoDB",
+      authors: "Author",
+      genre: "Software Engineering",
+      description: "A practical guide",
+    });
+  }, 30000);
+
+  it("preserves identifiers and returns equal-score recommendations by canonical id", async () => {
+    loadMock.mockResolvedValueOnce({
+      embed: async (texts) => tf.tensor2d(texts.map(() => Array(512).fill(1)), [texts.length, 512]),
+    });
+    await loadBooks([
+      { _id: "book-z", title: "C++", authors: "Z", genre: "Programming", description: "Use \"Node.js\"" },
+      { _id: "book-a", title: "MongoDB", authors: "A", genre: "Database", description: "Practical" },
+    ]);
+
+    const result = await recommend('"Node.js" C++ MongoDB');
+
+    expect(result.books.map((book) => book._id)).toEqual(["book-a", "book-z"]);
+  }, 30000);
+
   it("maps generic embedding failures to EMBEDDING_FAILED", async () => {
     loadMock.mockResolvedValueOnce({
       embed: async () => { throw new Error("encoder unavailable"); },

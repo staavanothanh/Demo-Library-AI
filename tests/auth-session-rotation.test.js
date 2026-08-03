@@ -49,6 +49,7 @@ function createSessionContinuityApp() {
   app.get("/test/session", (req, res) => res.json({
     sessionId: req.session.id,
     csrfToken: req.session.csrfToken,
+    chatPreferredLanguage: req.session.chatPreferredLanguage,
     cart: req.session.cart,
     chatHistory: req.session.chatHistory,
     returnTo: req.session.returnTo,
@@ -59,6 +60,7 @@ function createSessionContinuityApp() {
   }));
   app.post("/test/seed", csrf.requireToken, (req, res) => {
     req.session.cart = [{ bookId: BOOK_ID, quantity: 1 }];
+    req.session.chatPreferredLanguage = "vi";
     req.session.chatHistory = [{ role: "user", content: "Do not carry this over." }];
     req.session.returnTo = "/admin-dashboard";
     req.session.injectedRole = "admin";
@@ -96,6 +98,7 @@ describe("Passport session rotation continuity", () => {
     expect(authenticated.body.userId).toBe(USER.id);
     expect(authenticated.body.passport).toEqual({ user: USER.id });
     expect(authenticated.body.csrfToken).toBe(anonymous.body.csrfToken);
+    expect(authenticated.body.chatPreferredLanguage).toBe("vi");
     expect(authenticated.body.cart).toEqual([{ bookId: BOOK_ID, quantity: 1 }]);
     expect(authenticated.body).not.toHaveProperty("chatHistory");
     expect(authenticated.body).not.toHaveProperty("returnTo");
@@ -127,6 +130,7 @@ describe("Passport session rotation continuity", () => {
     expect(loggedOut.body).not.toHaveProperty("userId");
     expect(loggedOut.body).not.toHaveProperty("passport");
     expect(loggedOut.body.csrfToken).toBe(anonymous.body.csrfToken);
+    expect(loggedOut.body.chatPreferredLanguage).toBe("vi");
     expect(loggedOut.body.cart).toEqual([{ bookId: BOOK_ID, quantity: 2 }]);
   });
 
