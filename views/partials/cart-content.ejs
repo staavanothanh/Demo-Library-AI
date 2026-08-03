@@ -1,0 +1,55 @@
+<section id="cart-content" class="form-card wide cart-card" data-htmx-fragment-target aria-busy="false">
+  <% if (fragment) { %>
+    <%- include("cart-count", { cartCount }) %>
+  <% } %>
+  <% if (typeof feedbackMessage !== "undefined" && feedbackMessage) { %>
+    <p class="notice<%= typeof feedbackError !== "undefined" && feedbackError ? " cart-status-error" : "" %>" data-cart-status role="status" aria-live="polite"
+      aria-atomic="true"><%= feedbackMessage %></p>
+  <% } %>
+  <% if (!items.length) { %>
+    <div class="empty-state">
+      <p>Your cart is empty.</p>
+      <a class="text-link" href="/books">Browse the collection <span aria-hidden="true">→</span></a>
+    </div>
+  <% } else { %>
+    <div class="cart-items">
+      <% items.forEach((item) => { %>
+        <article class="cart-row">
+          <div class="cart-item-copy">
+            <h2><a href="/books/<%= item.book._id %>"><%= item.book.title %></a></h2>
+            <p><%= formatCurrency(item.book.price) %> each</p>
+          </div>
+          <form class="cart-update" action="/cart/items/<%= item.book._id %>/update" method="post" data-cart-mutation
+            hx-post="/cart/items/<%= item.book._id %>/update" hx-target="#cart-content" hx-swap="outerHTML"
+            hx-indicator="#cart-loading" hx-disabled-elt="find button">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <div class="field"><label for="quantity-<%= item.book._id %>">Quantity</label><input
+                id="quantity-<%= item.book._id %>" name="quantity" type="number" min="1" max="<%= item.book.stock %>"
+                value="<%= item.quantity %>" required></div>
+            <button class="button secondary" type="submit">Update</button>
+          </form>
+          <strong class="cart-subtotal"><%= formatCurrency(item.subtotalCents / 100) %></strong>
+          <form action="/cart/items/<%= item.book._id %>/remove" method="post" data-cart-mutation
+            hx-post="/cart/items/<%= item.book._id %>/remove" hx-target="#cart-content" hx-swap="outerHTML"
+            hx-indicator="#cart-loading" hx-disabled-elt="find button">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <button class="link-button" type="submit">Remove</button>
+          </form>
+        </article>
+      <% }) %>
+    </div>
+    <div class="cart-total"><strong>Total</strong><strong><%= formatCurrency(total) %></strong></div>
+    <div class="cart-actions">
+      <form action="/checkout" method="post" data-checkout-form hx-post="/checkout" hx-target="#cart-content"
+        hx-swap="outerHTML" hx-indicator="#cart-loading" hx-disabled-elt="find button">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <button class="button" type="submit">Demo checkout</button>
+      </form>
+      <form action="/cart/clear" method="post" data-cart-mutation hx-post="/cart/clear" hx-target="#cart-content"
+        hx-swap="outerHTML" hx-indicator="#cart-loading" hx-disabled-elt="find button">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <button class="button secondary" type="submit">Clear cart</button>
+      </form>
+    </div>
+  <% } %>
+</section>

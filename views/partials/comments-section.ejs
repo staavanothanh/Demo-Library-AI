@@ -1,0 +1,44 @@
+<section id="comments-section" class="form-card wide comments-section comments-card" data-htmx-fragment-target
+  aria-busy="false" aria-labelledby="comments-heading">
+  <div class="section-heading">
+    <p class="eyebrow">FROM THE COMMUNITY</p>
+    <div class="section-heading-row">
+      <h2 id="comments-heading">Customer comments</h2>
+      <span class="comments-count"><%= comments.length %> <%= comments.length === 1 ? "comment" : "comments" %></span>
+    </div>
+  </div>
+  <% if (typeof commentPosted !== "undefined" && commentPosted) { %>
+    <p class="notice" data-comment-status role="status" aria-live="polite">Comment posted.</p>
+  <% } %>
+  <% if (typeof errorMessage !== "undefined" && errorMessage) { %>
+    <p class="notice cart-status-error" data-comment-status role="status" aria-live="polite"><%= errorMessage %></p>
+  <% } %>
+  <% if (!comments.length) { %>
+    <p class="muted">No comments yet. Be the first to share a thought.</p>
+  <% } %>
+  <div class="comments-list">
+    <% comments.forEach((comment) => { %>
+      <article class="comment">
+        <strong class="comment-author"><%= comment.userId?.username || "Member" %></strong>
+        <p><%= comment.body %></p>
+      </article>
+    <% }) %>
+  </div>
+  <% if (user) { %>
+    <form class="comment-composer" action="/books/<%= bookId %>/comments" method="post" data-comment-form
+      hx-post="/books/<%= bookId %>/comments" hx-target="#comments-section" hx-swap="outerHTML"
+      hx-indicator="#comments-loading" hx-disabled-elt="find button">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <div class="field">
+        <label for="comment-body">Leave a comment</label>
+        <textarea id="comment-body" name="body" rows="5" maxlength="1000" aria-describedby="comment-body-help"
+          placeholder="Share what stayed with you..." required></textarea>
+        <p id="comment-body-help" class="form-help">Keep it thoughtful and under 1,000 characters.</p>
+      </div>
+      <button class="button comment-submit" type="submit">Post comment</button>
+    </form>
+    <p id="comments-loading" class="htmx-indicator muted" role="status" aria-live="polite">Posting comment…</p>
+  <% } else { %>
+    <p class="comment-sign-in"><a href="/login">Sign in</a> to leave a comment.</p>
+  <% } %>
+</section>

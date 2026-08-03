@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { isHtmxRequest, varyOnHtmx } = require("../middleware/requestMode");
 
 const SORTS = {
   title: { title: 1, _id: 1 },
@@ -45,7 +46,9 @@ function createCatalogController({ Book, Comment }) {
         const totalPages = Math.max(1, Math.ceil(totalBooks / query.limit));
         const currentPage = Math.min(query.page, totalPages);
         const books = await Book.find(filter).sort(SORTS[query.sort]).skip((currentPage - 1) * query.limit).limit(query.limit).lean();
-        return res.render("booklist", { books, query: query.q, filters: query, currentPage, totalPages, totalBooks, pageSize: query.limit });
+        const view = { books, query: query.q, filters: query, currentPage, totalPages, totalBooks, pageSize: query.limit };
+        varyOnHtmx(res);
+        return res.render(isHtmxRequest(req) ? "partials/catalog-results" : "booklist", view);
       } catch (error) { return next(error); }
     },
     showBook: async (req, res, next) => {

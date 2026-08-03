@@ -1,37 +1,28 @@
 <%- include("partials/header") %>
   <section class="form-card wide product-detail product-card">
-    <div class="product-media">
+    <div class="product-media" data-book-tilt>
       <% if (book.coverUrl) { %><img class="product-cover" src="<%= book.coverUrl %>" alt="Cover of <%= book.title %>">
-        <% } else { %>
-          <div class="product-cover placeholder" aria-hidden="true">No cover</div>
-          <% } %>
+      <% } else { %>
+        <div class="product-cover placeholder" aria-hidden="true">No cover</div>
+      <% } %>
     </div>
     <div class="product-copy">
       <div class="product-meta">
-        <p class="eyebrow">
-          <%= book.genre || "BOOK" %>
-        </p>
-        <h1>
-          <%= book.title %>
-        </h1>
-        <p class="author">By <%= book.authors %>
-        </p>
+        <p class="eyebrow"><%= book.genre || "BOOK" %></p>
+        <h1><%= book.title %></h1>
+        <p class="author">By <%= book.authors %></p>
       </div>
       <p class="product-kicker">A considered addition to your shelves</p>
-      <p class="product-description">
-        <%= book.description || "No description available." %>
-      </p>
+      <p class="product-description"><%= book.description || "No description available." %></p>
       <div class="product-purchase">
         <div class="pricing-block">
-          <p class="price">
-            <%= formatCurrency(book.price) %>
-          </p>
-          <p class="stock">
-            <%= book.stock> 0 ? `${book.stock} available` : "Currently out of stock" %>
-          </p>
+          <p class="price"><%= formatCurrency(book.price) %></p>
+          <p class="stock"><%= book.stock > 0 ? `${book.stock} available` : "Currently out of stock" %></p>
         </div>
-        <% if (book.stock> 0) { %>
-          <form class="inline-form purchase-form" action="/cart/items" method="post" data-cart-form>
+        <% if (book.stock > 0) { %>
+          <form class="inline-form purchase-form" action="/cart/items" method="post" data-cart-form
+            hx-post="/cart/items" hx-target="#cart-feedback" hx-swap="outerHTML" hx-indicator="#cart-loading"
+            hx-disabled-elt="find button">
             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             <input type="hidden" name="bookId" value="<%= book._id %>">
             <div class="field quantity-field">
@@ -40,47 +31,14 @@
             </div>
             <button class="button" type="submit">Add to cart</button>
           </form>
-          <p class="notice cart-status" data-cart-status role="status" aria-live="polite" hidden></p>
-          <% } %>
+          <p id="cart-feedback" class="notice cart-status" data-cart-status data-htmx-fragment-target role="status"
+            aria-live="polite" hidden></p>
+          <p id="cart-loading" class="htmx-indicator muted" role="status" aria-live="polite">Adding to your cart…</p>
+        <% } %>
       </div>
     </div>
   </section>
-  <section class="form-card wide comments-section comments-card">
-    <div class="section-heading">
-      <p class="eyebrow">FROM THE COMMUNITY</p>
-      <div class="section-heading-row">
-        <h2>Customer comments</h2>
-        <span class="comments-count">
-          <%= comments.length %>
-            <%= comments.length===1 ? "comment" : "comments" %>
-        </span>
-      </div>
-    </div>
-    <% if (!comments.length) { %>
-      <p class="muted">No comments yet. Be the first to share a thought.</p>
-      <% } %>
-        <div class="comments-list">
-          <% comments.forEach((comment)=> { %><article class="comment"><strong class="comment-author">
-                <%= comment.userId?.username || "Member" %>
-              </strong>
-              <p>
-                <%= comment.body %>
-              </p>
-            </article>
-            <% }) %>
-        </div>
-        <% if (user) { %>
-          <form class="comment-composer" action="/books/<%= book._id %>/comments" method="post"><input type="hidden"
-              name="_csrf" value="<%= csrfToken %>">
-            <div class="field"><label for="comment-body">Leave a comment</label><textarea id="comment-body" name="body"
-                rows="5" maxlength="1000" aria-describedby="comment-body-help"
-                placeholder="Share what stayed with you..." required></textarea>
-              <p id="comment-body-help" class="form-help">Keep it thoughtful and under 1,000 characters.</p>
-            </div><button class="button comment-submit" type="submit">Post
-              comment</button>
-          </form>
-          <% } else { %>
-            <p class="comment-sign-in"><a href="/login">Sign in</a> to leave a comment.</p>
-            <% } %>
-  </section>
+  <%- include("partials/comments-section", { bookId: book._id, comments, user, csrfToken }) %>
+  <script src="/vendor/vanilla-tilt.min.js" defer></script>
+  <script src="/js/effects.js" defer></script>
   <%- include("partials/footer") %>

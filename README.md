@@ -7,6 +7,8 @@ Mini-project for Sessions 10 and 11: an Express/EJS bookstore MVP with MongoDB u
 - Public paginated bookstore catalog with product detail pages.
 - Server-side Express-session cart and fake checkout; no real payment or order persistence.
 - Public comments with authenticated posting.
+- Progressive enhancement for catalog, cart, checkout, and comments using targeted self-hosted HTMX fragments; native links/forms remain canonical.
+- A restrained product-cover tilt enhancement using the exact, self-hosted `vanilla-tilt@1.8.1` package (disabled for reduced motion, touch, coarse pointers, save-data, and hidden tabs).
 - Floating chatbot for policy retrieval, book information, and recommendations.
 - Policy answers are grounded in indexed internal demo documents and refuse unsupported questions.
 - OpenCode Zen provider failures are handled without stopping the web process.
@@ -49,6 +51,7 @@ scripts/verifyAiData.js             Read-only AI/catalog/policy diagnostics
 scripts/chatbotCli.js               Direct interactive/one-shot chatbot harness
 views/                              EJS pages and partials
 public/                             Browser JavaScript and CSS
+public/vendor/                      Self-hosted, lockfile-pinned HTMX and Vanilla Tilt assets
 tests/                              Vitest/Supertest checks
 ```
 

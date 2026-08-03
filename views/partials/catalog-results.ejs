@@ -1,0 +1,44 @@
+<section id="catalog-results" class="catalog-results" data-htmx-fragment-target aria-labelledby="catalog-results-heading"
+  aria-busy="false">
+  <div class="catalog-meta">
+    <p id="catalog-results-heading" class="muted" data-catalog-heading role="status" aria-live="polite" aria-atomic="true">
+      <strong><%= totalBooks %></strong> books <span aria-hidden="true">·</span> page <%= currentPage %> of <%= totalPages %>
+    </p>
+  </div>
+  <section class="book-grid" aria-label="Book collection">
+    <% books.forEach((book) => { %>
+      <article class="book-card">
+        <a class="book-card-media" href="/books/<%= book._id %>" aria-label="View <%= book.title %>">
+          <% if (book.coverUrl) { %>
+            <img class="book-cover" src="<%= book.coverUrl %>" alt="Cover of <%= book.title %>" loading="lazy">
+          <% } else { %>
+            <div class="book-cover placeholder" aria-hidden="true">No cover</div>
+          <% } %>
+        </a>
+        <div class="book-card-body">
+          <p class="tag"><%= book.genre || "Book" %></p>
+          <h2><a href="/books/<%= book._id %>"><%= book.title %></a></h2>
+          <p class="author"><%= book.authors %></p>
+          <p class="book-price"><strong><%= formatCurrency(book.price) %></strong> <span aria-hidden="true">·</span>
+            <%= book.averageRating || "—" %>/5</p>
+          <p class="stock"><%= book.stock > 0 ? `${book.stock} in stock` : "Out of stock" %></p>
+          <a class="text-link" href="/books/<%= book._id %>">View details <span aria-hidden="true">→</span></a>
+        </div>
+      </article>
+    <% }) %>
+  </section>
+  <% if (!books.length) { %>
+    <p class="empty" role="status" aria-live="polite">No books matched your search. Try a different phrase.</p>
+  <% } %>
+  <% if (totalPages > 1) { %>
+    <nav class="pagination" aria-label="Book pages">
+      <% for (let page = 1; page <= totalPages; page += 1) { %>
+        <a href="/books?page=<%= page %>&limit=<%= pageSize %>&q=<%= encodeURIComponent(query) %>&sort=<%= filters.sort %>"
+          hx-get="/books?page=<%= page %>&limit=<%= pageSize %>&q=<%= encodeURIComponent(query) %>&sort=<%= filters.sort %>"
+          hx-target="#catalog-results" hx-swap="outerHTML transition:true" hx-push-url="true"
+          hx-indicator="#catalog-loading" hx-sync="#catalog-results:replace"
+          <%= page === currentPage ? "aria-current=page" : "" %>><%= page %></a>
+      <% } %>
+    </nav>
+  <% } %>
+</section>

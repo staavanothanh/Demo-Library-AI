@@ -4,7 +4,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="htmx-config" content='{"allowEval":false,"allowScriptTags":false,"selfRequestsOnly":true,"historyRestoreAsHxRequest":false,"historyCacheSize":0,"includeIndicatorStyles":false}'>
   <meta name="description" content="Leaf & Logic Books — a considered collection for curious readers.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <title>Leaf & Logic Books</title>
   <link rel="stylesheet" href="/css/style.css">
 </head>
@@ -15,7 +17,7 @@
     <a class="brand" href="/" aria-label="Leaf and Logic Books home">Leaf <span>&amp;</span> Logic</a>
     <nav class="site-nav" aria-label="Primary navigation">
       <a href="/books">Books</a>
-      <a href="/cart">Cart <span class="cart-count" data-cart-count>(<%= cartCount || 0 %>)</span></a>
+      <a href="/cart">Cart <span id="cart-count" class="cart-count" data-cart-count>(<%= cartCount || 0 %>)</span></a>
       <% if (user) { %>
         <% if (user.role==="admin" ) { %><a href="/admin-dashboard">Add book</a>
           <% } %>
@@ -27,6 +29,7 @@
     </nav>
   </header>
   <main id="main-content">
+    <p class="sr-only" data-htmx-live role="status" aria-live="polite" aria-atomic="true"></p>
     <% if (message) { %>
       <p class="notice" role="status">
         <%= message %>

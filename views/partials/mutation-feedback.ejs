@@ -1,0 +1,3 @@
+<p id="cart-feedback" class="notice<%= feedbackError ? " cart-status-error" : "" %>" data-htmx-fragment-target
+  role="status" aria-live="polite" aria-atomic="true"><%= message %></p>
+<%- include("cart-count", { cartCount }) %>

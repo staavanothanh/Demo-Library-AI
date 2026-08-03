@@ -31,7 +31,8 @@
     }
   };
 
-  setOpen(false);
+  panel.hidden = true;
+  toggle.setAttribute("aria-expanded", "false");
   toggle.addEventListener("click", () => setOpen(panel.hidden));
   close?.addEventListener("click", () => setOpen(false));
   document.addEventListener("keydown", (event) => {

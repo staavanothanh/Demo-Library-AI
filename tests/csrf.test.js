@@ -25,4 +25,19 @@ describe("session CSRF protection", () => {
     expect(missing.status).toBe(403);
     expect(accepted.status).toBe(200);
   });
+
+  it("does not treat HX-Request as CSRF proof", async () => {
+    let mutated = false;
+    const csrf = createCsrfMiddleware();
+    const expressApp = express();
+    expressApp.use(express.urlencoded({ extended: false }));
+    expressApp.use(session({ secret: "test-secret", resave: false, saveUninitialized: true }));
+    expressApp.use(csrf.exposeToken);
+    expressApp.post("/mutate", csrf.requireToken, (req, res) => { mutated = true; res.json({ ok: true }); });
+
+    const response = await request(expressApp).post("/mutate").set("HX-Request", "true");
+
+    expect(response.status).toBe(403);
+    expect(mutated).toBe(false);
+  });
 });
