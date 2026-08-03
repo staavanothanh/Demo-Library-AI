@@ -17,9 +17,6 @@ const { createCommentRoutes } = require("./routes/commentRoutes");
 const { createChatbotController } = require("./controllers/chatbotController");
 const { createChatbotRoutes } = require("./routes/chatbotRoutes");
 const { createRateLimiter } = require("./middleware/rateLimit");
-const { createPolicyService, createAtlasVectorSearch } = require("./services/policyService");
-const { createChatbotService } = require("./services/chatbotService");
-const { createOpenCodeZenProvider } = require("./services/aiProviders/openCodeZenProvider");
 const KnowledgeChunk = require("./models/KnowledgeChunk");
 const { createCsrfMiddleware } = require("./middleware/csrf");
 const { configurePassport } = require("./config/passport");
@@ -35,8 +32,9 @@ const { createCatalogRoutes } = require("./routes/catalogRoutes");
 const { createAdminRoutes } = require("./routes/adminRoutes");
 const { createRecommendationRoutes } = require("./routes/recommendationRoutes");
 const { createContentSecurityPolicy } = require("./middleware/csp");
+const { createChatbotRuntime } = require("./services/chatbotRuntime");
 
-function createApp({ sessionStore, recommendationClient = createRecommendationClient({ Book }), chatbotService } = {}) {
+function createApp({ sessionStore, recommendationClient = createRecommendationClient({ Book }), chatbotService, runtimeFactory = createChatbotRuntime } = {}) {
   const app = express();
   const rawTrustedProxyHops = process.env.TRUST_PROXY_HOPS;
   const trustedProxyHops = rawTrustedProxyHops === undefined || rawTrustedProxyHops === "" ? 0 : Number(rawTrustedProxyHops);
@@ -76,12 +74,10 @@ function createApp({ sessionStore, recommendationClient = createRecommendationCl
   const cartController = createCartController({ Book });
   const checkoutController = createCheckoutController({ Book });
   const commentController = createCommentController({ Book, Comment });
-  const policyService = createPolicyService({
-    KnowledgeChunk,
-    embeddingClient: recommendationClient,
-    vectorSearch: createAtlasVectorSearch({ KnowledgeChunk }),
-  });
-  const resolvedChatbotService = chatbotService || createChatbotService({ policyService, recommendationClient, provider: createOpenCodeZenProvider(), Book });
+  const runtime = chatbotService
+    ? { chatbotService }
+    : runtimeFactory({ Book, KnowledgeChunk, recommendationClient });
+  const resolvedChatbotService = runtime.chatbotService;
   const chatbotController = createChatbotController({ chatbotService: resolvedChatbotService });
   const aiRateLimit = Number(process.env.AI_RATE_LIMIT || 20);
   const authRateLimit = Number(process.env.AUTH_RATE_LIMIT || 5);

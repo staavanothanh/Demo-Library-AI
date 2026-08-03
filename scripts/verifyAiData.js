@@ -1,4 +1,5 @@
 const REQUIRED_EMBEDDING_DIMENSION = 512;
+const { configureRuntimeDns } = require("../services/runtimeDns");
 
 function isValidEmbedding(embedding) {
   return Array.isArray(embedding)
@@ -159,8 +160,7 @@ function formatDiagnostics(result) {
 
 async function main() {
   require("dotenv").config();
-  const dns = require("node:dns");
-  dns.setServers(["1.1.1.1", "1.0.0.1"]);
+  configureRuntimeDns();
 
   if (!process.env.MONGODB_URI) throw new Error("MONGODB_URI is required.");
   const mongoose = require("mongoose");

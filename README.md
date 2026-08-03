@@ -28,6 +28,7 @@ services/sessionTransitionState.js   Allowlisted state across auth rotation
 services/policyIndexer.js            Deterministic Markdown policy indexing
 services/policyService.js            Atlas/fallback policy retrieval
 services/chatbotService.js           Intent routing and safe provider context
+services/chatbotRuntime.js            Shared policy/vector/provider composition
 services/aiProviders/openCodeZenProvider.js  OpenCode Zen adapter
 middleware/csrf.js                   Session-backed mutation protection
 ```
@@ -45,6 +46,7 @@ services/tensorflowWorker.js        Background AI worker
 services/tensorflowService.js       USE embeddings and cosine similarity
 scripts/seedBooks.js                Seed catalog
 scripts/verifyAiData.js             Read-only AI/catalog/policy diagnostics
+scripts/chatbotCli.js               Direct interactive/one-shot chatbot harness
 views/                              EJS pages and partials
 public/                             Browser JavaScript and CSS
 tests/                              Vitest/Supertest checks
@@ -121,5 +123,30 @@ npm run dev
 Coverage currently enforces 80% minimum global thresholds for statements, branches, functions, and lines. The in-process rate limiter is suitable for a single Node.js instance; use a shared atomic store before deploying multiple instances. The startup AI catalog refresh retries with bounded backoff and is independent of HTTP availability.
 
 Open `http://localhost:3000`.
+
+## Direct chatbot CLI
+
+The CLI talks directly to the real chatbot service stack—MongoDB policy retrieval, Atlas Vector Search (with the existing safe fallback), the TensorFlow recommendation worker, canonical book lookup, and OpenCode Zen—without starting the web server or using browser cookies/CSRF.
+
+It still loads the normal runtime configuration, can use provider quota, and must be run only in an authorized environment. Do not paste secrets into prompts. The CLI is not a replacement for browser E2E coverage of sessions, CSRF, rate limits, or UI behavior.
+
+The CLI disables Mongoose `autoCreate` and `autoIndex` to avoid automatic schema/index side effects, and its code performs no data mutations. Strongest read-only protection at the MongoDB layer still requires credentials limited to the `read` role on the `Library` database; these Mongoose options do not turn an Atlas Admin credential into a read-only credential.
+
+Interactive mode:
+
+```powershell
+npm run chatbot:cli
+```
+
+Inside the session, use `/help`, `/status`, `/clear`, or `/exit`. `/status` prints only recommendation readiness and the public provider/model name.
+
+Machine-readable one-shot mode:
+
+```powershell
+npm run chatbot:ask -- --prompt "what is your shipping policy?" --json
+npm run chatbot:ask -- --prompt "recommend for me a book related to data" --json
+```
+
+The final result line starts with `CHATBOT_RESULT_JSON=`. Success results contain `ok`, `answer`, `intent`, `sources`, and canonical `books`. Failure results contain safe `code`, `stage`, `intent`, `candidateCount`, `canonicalCount`, and `message`; they never include connection strings, credentials, headers, cookies, session history, stack traces, or raw upstream payloads. Exit code `0` means the chatbot returned a result; exit code `1` means validation or runtime failure.
 
 > The administrator account is created or updated at server startup from `ADMIN_USERNAME` and `ADMIN_PASSWORD`. Sign in with those values to access `/admin-dashboard`.

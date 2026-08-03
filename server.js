@@ -1,6 +1,5 @@
 require("dotenv").config();
 
-const dns = require("node:dns");
 const mongoose = require("mongoose");
 const { MongoStore } = require("connect-mongo");
 const bcrypt = require("bcrypt");
@@ -10,8 +9,9 @@ const { createApp } = require("./app");
 const { createRecommendationClient } = require("./services/recommendationClient");
 const { ensureAdmin } = require("./services/adminProvisioning");
 const { createCatalogStartupRetry } = require("./services/catalogStartupRetry");
+const { configureRuntimeDns } = require("./services/runtimeDns");
 
-dns.setServers(["1.1.1.1", "1.0.0.1"]);
+configureRuntimeDns();
 
 const positiveIntegerEnv = (name, fallback) => {
   const value = Number(process.env[name]);
