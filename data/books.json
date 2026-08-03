@@ -12,7 +12,7 @@
     "publisher": "Packt",
     "price": 34.99,
     "stock": 12,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/8513336-L.jpg?default=false"
   },
   {
     "bookID": 2,
@@ -27,7 +27,7 @@
     "publisher": "No Starch Press",
     "price": 16.33,
     "stock": 7,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/7082166-L.jpg?default=false"
   },
   {
     "bookID": 3,
@@ -42,7 +42,7 @@
     "publisher": "O'Reilly Media",
     "price": 19.5,
     "stock": 8,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9781491954461-L.jpg?default=false"
   },
   {
     "bookID": 4,
@@ -57,7 +57,7 @@
     "publisher": "O'Reilly Media",
     "price": 22.67,
     "stock": 9,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/8434671-L.jpg?default=false"
   },
   {
     "bookID": 5,
@@ -72,7 +72,7 @@
     "publisher": "O'Reilly Media",
     "price": 25.84,
     "stock": 10,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/9388208-L.jpg?default=false"
   },
   {
     "bookID": 6,
@@ -87,7 +87,7 @@
     "publisher": "Independently published",
     "price": 29.01,
     "stock": 11,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/12539693-L.jpg?default=false"
   },
   {
     "bookID": 7,
@@ -102,7 +102,7 @@
     "publisher": "Addison-Wesley Professional",
     "price": 32.18,
     "stock": 12,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/10143650-L.jpg?default=false"
   },
   {
     "bookID": 8,
@@ -117,7 +117,7 @@
     "publisher": "Prentice Hall",
     "price": 35.35,
     "stock": 13,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/8065615-L.jpg?default=false"
   },
   {
     "bookID": 9,
@@ -132,7 +132,7 @@
     "publisher": "No Starch Press",
     "price": 38.52,
     "stock": 14,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/8245395-L.jpg?default=false"
   },
   {
     "bookID": 10,
@@ -147,7 +147,7 @@
     "publisher": "No Starch Press",
     "price": 41.69,
     "stock": 15,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/8508621-L.jpg?default=false"
   },
   {
     "bookID": 11,
@@ -162,7 +162,7 @@
     "publisher": "Addison-Wesley Professional",
     "price": 44.86,
     "stock": 16,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/8507565-L.jpg?default=false"
   },
   {
     "bookID": 12,
@@ -177,7 +177,7 @@
     "publisher": "Microsoft Press",
     "price": 48.03,
     "stock": 17,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/461500-L.jpg?default=false"
   },
   {
     "bookID": 13,
@@ -192,7 +192,7 @@
     "publisher": "Addison-Wesley Professional",
     "price": 11.2,
     "stock": 18,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/13750918-L.jpg?default=false"
   },
   {
     "bookID": 14,
@@ -207,7 +207,7 @@
     "publisher": "Addison-Wesley Professional",
     "price": 14.37,
     "stock": 19,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/6915361-L.jpg?default=false"
   },
   {
     "bookID": 15,
@@ -222,7 +222,7 @@
     "publisher": "IT Revolution Press",
     "price": 17.54,
     "stock": 20,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/8509069-L.jpg?default=false"
   },
   {
     "bookID": 16,
@@ -237,7 +237,7 @@
     "publisher": "MIT Press",
     "price": 20.71,
     "stock": 5,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/8086288-L.jpg?default=false"
   },
   {
     "bookID": 17,
@@ -252,7 +252,7 @@
     "publisher": "Pearson",
     "price": 23.88,
     "stock": 6,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/olid/OL25434622M-L.jpg?default=false"
   },
   {
     "bookID": 18,
@@ -267,7 +267,7 @@
     "publisher": "Springer",
     "price": 27.05,
     "stock": 7,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/9413468-L.jpg?default=false"
   },
   {
     "bookID": 19,
@@ -282,7 +282,7 @@
     "publisher": "O'Reilly Media",
     "price": 30.22,
     "stock": 8,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/14559602-L.jpg?default=false"
   },
   {
     "bookID": 20,
@@ -297,7 +297,7 @@
     "publisher": "MIT Press",
     "price": 33.39,
     "stock": 9,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9780262039246-L.jpg?default=false"
   },
   {
     "bookID": 21,
@@ -312,7 +312,7 @@
     "publisher": "Viking",
     "price": 36.56,
     "stock": 10,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/11264186-L.jpg?default=false"
   },
   {
     "bookID": 22,
@@ -327,7 +327,7 @@
     "publisher": "W. W. Norton & Company",
     "price": 39.73,
     "stock": 11,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/10678431-L.jpg?default=false"
   },
   {
     "bookID": 23,
@@ -342,7 +342,7 @@
     "publisher": "Crown",
     "price": 42.9,
     "stock": 12,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/8136557-L.jpg?default=false"
   },
   {
     "bookID": 24,
@@ -357,7 +357,7 @@
     "publisher": "Basic Books",
     "price": 46.07,
     "stock": 13,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/9321915-L.jpg?default=false"
   },
   {
     "bookID": 25,
@@ -372,7 +372,7 @@
     "publisher": "Knopf",
     "price": 49.24,
     "stock": 14,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/10239283-L.jpg?default=false"
   },
   {
     "bookID": 26,
@@ -387,7 +387,7 @@
     "publisher": "O'Reilly Media",
     "price": 12.41,
     "stock": 15,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/14831765-L.jpg?default=false"
   },
   {
     "bookID": 27,
@@ -402,7 +402,7 @@
     "publisher": "Wiley",
     "price": 15.58,
     "stock": 16,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/7932707-L.jpg?default=false"
   },
   {
     "bookID": 28,
@@ -417,7 +417,7 @@
     "publisher": "Wiley",
     "price": 18.75,
     "stock": 17,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/301298-L.jpg?default=false"
   },
   {
     "bookID": 29,
@@ -432,7 +432,7 @@
     "publisher": "O'Reilly Media",
     "price": 21.92,
     "stock": 18,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/14572292-L.jpg?default=false"
   },
   {
     "bookID": 30,
@@ -447,7 +447,7 @@
     "publisher": "O'Reilly Media",
     "price": 25.09,
     "stock": 19,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/8512070-L.jpg?default=false"
   },
   {
     "bookID": 31,
@@ -462,7 +462,7 @@
     "publisher": "W. W. Norton & Company",
     "price": 28.26,
     "stock": 20,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/8425495-L.jpg?default=false"
   },
   {
     "bookID": 32,
@@ -477,7 +477,7 @@
     "publisher": "Dey Street Books",
     "price": 31.43,
     "stock": 5,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/8814605-L.jpg?default=false"
   },
   {
     "bookID": 33,
@@ -492,7 +492,7 @@
     "publisher": "MIT Press",
     "price": 34.6,
     "stock": 6,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/10475489-L.jpg?default=false"
   },
   {
     "bookID": 34,
@@ -507,7 +507,7 @@
     "publisher": "W. W. Norton & Company",
     "price": 37.77,
     "stock": 7,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/9254486-L.jpg?default=false"
   },
   {
     "bookID": 35,
@@ -522,7 +522,7 @@
     "publisher": "HarperBusiness",
     "price": 40.94,
     "stock": 8,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/7431270-L.jpg?default=false"
   },
   {
     "bookID": 36,
@@ -537,7 +537,7 @@
     "publisher": "Crown Business",
     "price": 44.11,
     "stock": 9,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/7104760-L.jpg?default=false"
   },
   {
     "bookID": 37,
@@ -552,7 +552,7 @@
     "publisher": "HarperBusiness",
     "price": 47.28,
     "stock": 10,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/7279515-L.jpg?default=false"
   },
   {
     "bookID": 38,
@@ -567,7 +567,7 @@
     "publisher": "Harvard Business School Press",
     "price": 10.45,
     "stock": 11,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/9274687-L.jpg?default=false"
   },
   {
     "bookID": 39,
@@ -582,7 +582,7 @@
     "publisher": "Portfolio",
     "price": 13.62,
     "stock": 12,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/9254540-L.jpg?default=false"
   },
   {
     "bookID": 40,
@@ -597,7 +597,7 @@
     "publisher": "Vintage",
     "price": 16.79,
     "stock": 13,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/421244-L.jpg?default=false"
   },
   {
     "bookID": 41,
@@ -612,7 +612,7 @@
     "publisher": "Bantam",
     "price": 19.96,
     "stock": 14,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/10242550-L.jpg?default=false"
   },
   {
     "bookID": 42,
@@ -627,7 +627,7 @@
     "publisher": "Portfolio",
     "price": 23.13,
     "stock": 15,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/8792782-L.jpg?default=false"
   },
   {
     "bookID": 43,
@@ -642,7 +642,7 @@
     "publisher": "Bantam Books",
     "price": 26.3,
     "stock": 16,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/10432365-L.jpg?default=false"
   },
   {
     "bookID": 44,
@@ -657,7 +657,7 @@
     "publisher": "Random House",
     "price": 29.47,
     "stock": 17,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/8283901-L.jpg?default=false"
   },
   {
     "bookID": 45,
@@ -672,7 +672,7 @@
     "publisher": "Scribner",
     "price": 32.64,
     "stock": 18,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/olid/OL26412834M-L.jpg?default=false"
   },
   {
     "bookID": 46,
@@ -687,7 +687,7 @@
     "publisher": "Oxford University Press",
     "price": 35.81,
     "stock": 19,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/133936-L.jpg?default=false"
   },
   {
     "bookID": 47,
@@ -702,7 +702,7 @@
     "publisher": "Henry Holt and Company",
     "price": 38.98,
     "stock": 20,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/7910870-L.jpg?default=false"
   },
   {
     "bookID": 48,
@@ -717,7 +717,7 @@
     "publisher": "Crown",
     "price": 42.15,
     "stock": 5,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/12544117-L.jpg?default=false"
   },
   {
     "bookID": 49,
@@ -732,7 +732,7 @@
     "publisher": "Random House",
     "price": 45.32,
     "stock": 6,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/10152882-L.jpg?default=false"
   },
   {
     "bookID": 50,
@@ -747,7 +747,7 @@
     "publisher": "Doubleday",
     "price": 48.49,
     "stock": 7,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/olid/OL28720778M-L.jpg?default=false"
   },
   {
     "bookID": 51,
@@ -762,7 +762,7 @@
     "publisher": "Harper",
     "price": 11.66,
     "stock": 8,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/8634250-L.jpg?default=false"
   },
   {
     "bookID": 52,
@@ -777,7 +777,7 @@
     "publisher": "W. W. Norton & Company",
     "price": 14.83,
     "stock": 9,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/7884018-L.jpg?default=false"
   },
   {
     "bookID": 53,
@@ -792,7 +792,7 @@
     "publisher": "Bloomsbury Publishing",
     "price": 18,
     "stock": 10,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/8963642-L.jpg?default=false"
   },
   {
     "bookID": 54,
@@ -807,7 +807,7 @@
     "publisher": "Simon & Schuster",
     "price": 21.17,
     "stock": 11,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/8969538-L.jpg?default=false"
   },
   {
     "bookID": 55,
@@ -822,7 +822,7 @@
     "publisher": "Random House",
     "price": 24.34,
     "stock": 12,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/10129368-L.jpg?default=false"
   },
   {
     "bookID": 56,
@@ -837,7 +837,7 @@
     "publisher": "Doubleday",
     "price": 27.51,
     "stock": 13,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/13521319-L.jpg?default=false"
   },
   {
     "bookID": 57,
@@ -852,7 +852,7 @@
     "publisher": "Crown",
     "price": 30.68,
     "stock": 14,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/9293917-L.jpg?default=false"
   },
   {
     "bookID": 58,
@@ -867,7 +867,7 @@
     "publisher": "Liveright",
     "price": 33.85,
     "stock": 15,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/7418788-L.jpg?default=false"
   },
   {
     "bookID": 59,
@@ -882,7 +882,7 @@
     "publisher": "Doubleday",
     "price": 37.02,
     "stock": 16,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/9242450-L.jpg?default=false"
   },
   {
     "bookID": 60,
@@ -897,7 +897,7 @@
     "publisher": "Harper & Row",
     "price": 40.19,
     "stock": 17,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/10592817-L.jpg?default=false"
   },
   {
     "bookID": 61,
@@ -912,7 +912,7 @@
     "publisher": "Secker & Warburg",
     "price": 43.36,
     "stock": 18,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/14351142-L.jpg?default=false"
   },
   {
     "bookID": 62,
@@ -927,7 +927,7 @@
     "publisher": "J. B. Lippincott & Co.",
     "price": 46.53,
     "stock": 19,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/14351077-L.jpg?default=false"
   },
   {
     "bookID": 63,
@@ -942,7 +942,7 @@
     "publisher": "Charles Scribner's Sons",
     "price": 49.7,
     "stock": 20,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/14635758-L.jpg?default=false"
   },
   {
     "bookID": 64,
@@ -957,7 +957,7 @@
     "publisher": "Grand Central Publishing",
     "price": 12.87,
     "stock": 5,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/8044605-L.jpg?default=false"
   },
   {
     "bookID": 65,
@@ -972,7 +972,7 @@
     "publisher": "Tor Books",
     "price": 16.04,
     "stock": 6,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/olid/OL26818690M-L.jpg?default=false"
   },
   {
     "bookID": 66,
@@ -987,7 +987,7 @@
     "publisher": "Ace Books",
     "price": 19.21,
     "stock": 7,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/10618463-L.jpg?default=false"
   },
   {
     "bookID": 67,
@@ -1002,7 +1002,7 @@
     "publisher": "Doubleday",
     "price": 22.38,
     "stock": 8,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/8745330-L.jpg?default=false"
   },
   {
     "bookID": 68,
@@ -1017,7 +1017,7 @@
     "publisher": "Alfred A. Knopf",
     "price": 25.55,
     "stock": 9,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/8261367-L.jpg?default=false"
   },
   {
     "bookID": 69,
@@ -1032,7 +1032,7 @@
     "publisher": "Riverhead Books",
     "price": 28.72,
     "stock": 10,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/14846827-L.jpg?default=false"
   },
   {
     "bookID": 70,
@@ -1047,7 +1047,7 @@
     "publisher": "Viking",
     "price": 31.89,
     "stock": 11,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/10201431-L.jpg?default=false"
   },
   {
     "bookID": 71,
@@ -1062,7 +1062,7 @@
     "publisher": "Avery",
     "price": 35.06,
     "stock": 12,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/12539702-L.jpg?default=false"
   },
   {
     "bookID": 72,
@@ -1077,7 +1077,7 @@
     "publisher": "Random House",
     "price": 38.23,
     "stock": 13,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/746414-L.jpg?default=false"
   },
   {
     "bookID": 73,
@@ -1092,7 +1092,7 @@
     "publisher": "Grand Central Publishing",
     "price": 41.4,
     "stock": 14,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/7988607-L.jpg?default=false"
   },
   {
     "bookID": 74,
@@ -1107,7 +1107,7 @@
     "publisher": "Free Press",
     "price": 44.57,
     "stock": 15,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/10079937-L.jpg?default=false"
   },
   {
     "bookID": 75,
@@ -1122,7 +1122,7 @@
     "publisher": "Scribner",
     "price": 47.74,
     "stock": 16,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/7438753-L.jpg?default=false"
   },
   {
     "bookID": 76,
@@ -1137,7 +1137,7 @@
     "publisher": "Beacon Press",
     "price": 10.91,
     "stock": 17,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/olid/OL19392027M-L.jpg?default=false"
   },
   {
     "bookID": 77,
@@ -1152,7 +1152,7 @@
     "publisher": "Hazelden",
     "price": 14.08,
     "stock": 18,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/7237826-L.jpg?default=false"
   },
   {
     "bookID": 78,
@@ -1167,7 +1167,7 @@
     "publisher": "Crown Currency",
     "price": 17.25,
     "stock": 19,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/7285986-L.jpg?default=false"
   },
   {
     "bookID": 79,
@@ -1182,7 +1182,7 @@
     "publisher": "Trumpeter",
     "price": 20.42,
     "stock": 20,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/7916587-L.jpg?default=false"
   },
   {
     "bookID": 80,
@@ -1197,6 +1197,6 @@
     "publisher": "Simon & Schuster",
     "price": 23.59,
     "stock": 5,
-    "coverUrl": ""
+    "coverUrl": "https://covers.openlibrary.org/b/id/13314878-L.jpg?default=false"
   }
 ]
