@@ -89,8 +89,16 @@ async function loadBooks(books) {
     throw createAiError("CATALOG_EMPTY", "The recommendation catalog is empty.");
   }
 
+  if (books.some((book) => typeof book?._id !== "string" || !book._id.trim())) {
+    cachedEmbeddings?.dispose();
+    cachedBooks = [];
+    cachedEmbeddings = undefined;
+    setReadiness("failed", { catalogCount: 0, lastErrorCode: "CATALOG_INVALID" });
+    throw createAiError("CATALOG_INVALID", "The recommendation catalog contains invalid book identifiers.");
+  }
+
   const encoder = await loadModel();
-  const nextBooks = books.map((book) => ({ ...book, _id: String(book._id) }));
+  const nextBooks = books.map((book) => ({ ...book, _id: book._id.trim() }));
   const texts = nextBooks.map((book) => `${book.title || ""}. ${book.authors || ""}. ${book.genre || ""}. ${book.description || ""}`.trim());
   let result;
   try {

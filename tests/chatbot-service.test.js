@@ -1,9 +1,36 @@
+const { EventEmitter } = require("node:events");
+const mongoose = require("mongoose");
+const { createRecommendationClient } = require("../services/recommendationClient");
 const {
   createPolicyService,
   createAtlasVectorSearch,
   normalizeCosineSimilarity,
 } = require("../services/policyService");
 const { createChatbotService, classifyIntent } = require("../services/chatbotService");
+
+class StructuredCloneWorker extends EventEmitter {
+  constructor() {
+    super();
+    this.books = [];
+  }
+
+  postMessage(message) {
+    const cloned = structuredClone(message);
+    queueMicrotask(() => {
+      if (cloned.type === "loadBooks") {
+        this.books = cloned.books;
+        this.emit("message", { requestId: cloned.requestId, response: "loaded", books: [] });
+        return;
+      }
+      this.emit("message", { requestId: cloned.requestId, response: "matches", books: this.books.slice(0, 1) });
+    });
+  }
+
+  async terminate() {
+    this.emit("exit", 0);
+    return 0;
+  }
+}
 
 describe("policy retrieval and chatbot safety", () => {
   it("classifies supported bookstore intents", () => {
@@ -164,6 +191,39 @@ describe("policy retrieval and chatbot safety", () => {
     await service.chat({ message: "Recommend a book" });
     expect(query).toBeUndefined();
   });
+
+  it("keeps a real ObjectId recommendation canonical across the worker boundary", async () => {
+    const id = new mongoose.Types.ObjectId();
+    const catalogBook = { _id: id, title: "Node.js Design Patterns", authors: "Mario Casciaro", genre: "Programming" };
+    let canonicalQuery;
+    const Book = {
+      find: (filter = {}) => {
+        if (filter?._id?.$in) {
+          canonicalQuery = filter;
+          return { select: () => ({ lean: async () => [{ ...catalogBook, _id: id.toString() }] }) };
+        }
+        return { lean: async () => [catalogBook] };
+      },
+    };
+    const worker = new StructuredCloneWorker();
+    const recommendationClient = createRecommendationClient({ Book, workerFactory: () => worker });
+    const service = createChatbotService({
+      policyService: { retrieve: async () => ({ chunks: [], refused: false }) },
+      recommendationClient,
+      provider: { chat: async () => ({ text: "Here is a canonical recommendation." }) },
+      Book,
+    });
+
+    try {
+      const result = await service.chat({ message: "Recommend a programming book" });
+      expect(result.books).toHaveLength(1);
+      expect(result.books[0]._id).toBe(id.toString());
+      expect(canonicalQuery).toEqual({ _id: { $in: [id.toString()] } });
+      expect(result.answer).not.toContain("NO_BOOKS_FOUND");
+    } finally {
+      await recommendationClient.stop();
+    }
+  }, 30000);
 
   it("uses in-memory cosine fallback and refuses below threshold", async () => {
     const KnowledgeChunk = {

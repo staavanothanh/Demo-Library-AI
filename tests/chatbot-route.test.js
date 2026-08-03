@@ -41,6 +41,36 @@ describe("public chatbot endpoint", () => {
     expect(response.text).not.toContain("secret provider response");
   });
 
+  it("logs only sanitized stage diagnostics", async () => {
+    const log = vi.spyOn(console, "error").mockImplementation(() => {});
+    const app = createApp({
+      chat: async () => {
+        throw Object.assign(new Error("secret provider response"), {
+          code: "NOT_CONFIGURED",
+          stage: "provider",
+          intent: "policy",
+          candidateCount: 1,
+          canonicalCount: 0,
+        });
+      },
+    });
+
+    try {
+      await request(app).post("/api/ai/chat").send({ message: "How do you ship?" });
+      expect(log).toHaveBeenCalledWith(JSON.stringify({
+        event: "chatbot_request_failed",
+        intent: "policy",
+        stage: "provider",
+        code: "NOT_CONFIGURED",
+        candidateCount: 1,
+        canonicalCount: 0,
+      }));
+      expect(log.mock.calls.flat().join(" ")).not.toContain("secret provider response");
+    } finally {
+      log.mockRestore();
+    }
+  });
+
   it("rejects oversized messages before calling the service", async () => {
     let calls = 0;
     const app = createApp({ chat: async () => { calls += 1; return {}; } });

@@ -13,7 +13,7 @@ function getOpenCodeZenConfig(input = process.env) {
   return { baseUrl, model, apiKey, timeoutMs };
 }
 
-function createOpenCodeZenProvider(options = {}) {
+function createOpenCodeZenProvider(options = process.env) {
   const config = getOpenCodeZenConfig(options);
   return {
     config: { baseUrl: config.baseUrl, model: config.model, timeoutMs: config.timeoutMs },

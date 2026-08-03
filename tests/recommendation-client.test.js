@@ -1,4 +1,5 @@
 const { EventEmitter } = require("node:events");
+const mongoose = require("mongoose");
 const { createRecommendationClient } = require("../services/recommendationClient");
 
 class FakeWorker extends EventEmitter {
@@ -53,6 +54,23 @@ function createClient({ getBooks = () => BOOKS_A } = {}) {
 }
 
 describe("recommendation catalog recovery", () => {
+  it("serializes Mongoose ObjectIds before the worker boundary", async () => {
+    const id = new mongoose.Types.ObjectId();
+    const sourceBooks = [{ _id: id, title: "Book A", authors: "Author A" }];
+    const { client, workers } = createClient({ getBooks: () => sourceBooks });
+    const refresh = client.refreshBooks();
+
+    await flush();
+    const loadMessage = workers[0].messages[0];
+    expect(typeof loadMessage.books[0]._id).toBe("string");
+    expect(loadMessage.books[0]._id).toBe(id.toString());
+    expect(structuredClone(loadMessage.books)[0]._id).toBe(id.toString());
+    expect(sourceBooks[0]._id).toBe(id);
+
+    reply(workers[0], loadMessage, { response: "loaded", books: [] });
+    await expect(refresh).resolves.toMatchObject({ response: "loaded" });
+  });
+
   it("exposes a ready status after a non-empty catalog is loaded", async () => {
     const { client, workers } = createClient();
     const refresh = client.refreshBooks();

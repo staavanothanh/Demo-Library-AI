@@ -52,6 +52,11 @@ describe("TensorFlow retrieval boundary", () => {
     await expect(loadBooks([])).rejects.toMatchObject({ code: "CATALOG_EMPTY" });
   });
 
+  it("rejects non-string worker catalog identifiers with CATALOG_INVALID", async () => {
+    await expect(loadBooks([{ _id: { buffer: new Uint8Array(12) }, title: "JavaScript" }]))
+      .rejects.toMatchObject({ code: "CATALOG_INVALID" });
+  });
+
   it("reports model loading failures with MODEL_LOAD_FAILED", async () => {
     loadMock.mockRejectedValueOnce(new Error("model unavailable"));
 

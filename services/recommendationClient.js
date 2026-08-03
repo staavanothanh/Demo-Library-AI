@@ -38,7 +38,11 @@ function createRecommendationClient({ Book, workerFactory = () => new Worker(pat
     readiness = { ...readiness, status, ...details };
   };
   const getStatus = () => ({ ...readiness });
-  const cloneBooks = (books) => (Array.isArray(books) ? books.map((book) => ({ ...book })) : []);
+  const cloneBooks = (books) => (Array.isArray(books) ? books.map((book) => {
+    const clone = { ...book };
+    if (book?._id !== undefined && book?._id !== null) clone._id = String(book._id);
+    return clone;
+  }) : []);
   const clearCatalogLoad = (load) => {
     if (catalogLoad !== load) return;
     catalogLoad = undefined;

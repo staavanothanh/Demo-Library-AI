@@ -79,4 +79,38 @@ describe("read-only AI data diagnostics", () => {
 
     expect(result).toMatchObject({ status: "invalid", dimensions: 128, similarity: "euclidean" });
   });
+
+  it("requires valid candidates and canonical matches for recommendation readiness", async () => {
+    const id = "507f1f77bcf86cd799439011";
+    let canonicalFilter;
+    const recommendationClient = {
+      refreshBooks: async () => ({ response: "ready" }),
+      recommend: async () => ({ books: [{ _id: id }, { _id: "[object Object]" }] }),
+      getStatus: () => ({ status: "ready", catalogCount: 2, catalogVersion: 1 }),
+    };
+    const Book = {
+      find: (filter = {}) => {
+        if (filter?._id?.$in) canonicalFilter = filter;
+        return { lean: async () => (filter?._id?.$in ? [{ _id: id }] : [{ _id: id }]) };
+      },
+    };
+
+    const result = await collectAiDataDiagnostics({
+      Book,
+      KnowledgeChunk: {
+        find: () => ({ lean: async () => [] }),
+        collection: { listSearchIndexes: async () => [] },
+      },
+      recommendationClient,
+    });
+
+    expect(canonicalFilter).toEqual({ _id: { $in: [id] } });
+    expect(result.recommendation).toMatchObject({
+      candidateCount: 2,
+      validCandidateIdCount: 1,
+      canonicalMatchCount: 1,
+      endToEndReady: false,
+    });
+    expect(formatDiagnostics(result)).toContain("Recommendation end-to-end ready: no");
+  });
 });

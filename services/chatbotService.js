@@ -88,7 +88,16 @@ function withErrorCode(error, fallbackCode) {
   return wrapped;
 }
 
-function createChatbotService({ policyService, recommendationClient, provider, Book }) {
+function withStage(error, stage, details = {}, fallbackCode = "INTERNAL") {
+  return Object.assign(withErrorCode(error, fallbackCode), { stage, ...details });
+}
+
+function logSafeEvent(logger, event, details = {}) {
+  if (typeof logger?.warn !== "function") return;
+  logger.warn(JSON.stringify({ event, ...details }));
+}
+
+function createChatbotService({ policyService, recommendationClient, provider, Book, logger = console }) {
   const canonicalBooks = async (candidates = []) => {
     const ids = candidates
       .map((book) => String(book?._id || book?.id || ""))
@@ -110,9 +119,13 @@ function createChatbotService({ policyService, recommendationClient, provider, B
       const completion = await provider.chat(messages);
       return { answer: completion.text, intent: "conversation", sources: [], books: [] };
     } catch (error) {
+      const safeError = withStage(error, "provider", { intent: "conversation" }, "UPSTREAM_UNAVAILABLE");
       const fallback = fallbackConversationAnswer(message);
-      if (fallback) return { answer: fallback, intent: "conversation", sources: [], books: [] };
-      throw withErrorCode(error, "UPSTREAM_UNAVAILABLE");
+      if (fallback) {
+        logSafeEvent(logger, "chatbot_provider_fallback", { stage: "provider", intent: "conversation", code: safeError.code });
+        return { answer: fallback, intent: "conversation", sources: [], books: [] };
+      }
+      throw safeError;
     }
   };
 
@@ -124,37 +137,81 @@ function createChatbotService({ policyService, recommendationClient, provider, B
     let policy;
     let sources = [];
     if (intent === "policy" || intent === "mixed") {
-      policy = await policyService.retrieve(message);
+      try {
+        policy = await policyService.retrieve(message);
+      } catch (error) {
+        throw withStage(error, "policy-retrieve", { intent });
+      }
       const chunks = Array.isArray(policy?.chunks) ? policy.chunks : [];
       if (policy?.refused || !chunks.length) return { answer: POLICY_REFUSAL, intent, sources: [], books: [] };
       sources = [...new Set(chunks.map((chunk) => chunk.source).filter(Boolean))];
       if (intent === "policy") {
-        const completion = await provider.chat([
-          { role: "system", content: POLICY_SYSTEM_PROMPT },
-          { role: "system", content: `STORE POLICY CONTEXT:\n${formatPolicyContext(chunks)}` },
-          ...safeHistory(history),
-          { role: "user", content: message },
-        ]);
+        let completion;
+        try {
+          completion = await provider.chat([
+            { role: "system", content: POLICY_SYSTEM_PROMPT },
+            { role: "system", content: `STORE POLICY CONTEXT:\n${formatPolicyContext(chunks)}` },
+            ...safeHistory(history),
+            { role: "user", content: message },
+          ]);
+        } catch (error) {
+          throw withStage(error, "provider", { intent });
+        }
         return { answer: completion.text, intent, sources, books: [] };
       }
     }
 
     let books = [];
     if (intent === "mixed" || intent === "recommendation" || intent === "book-information") {
+      let recommendations;
       try {
-        const recommendations = await recommendationClient.recommend(message);
-        books = await canonicalBooks(recommendations?.books || []);
+        recommendations = await recommendationClient.recommend(message);
       } catch (error) {
+        const safeRecommendationError = withStage(error, "recommend", {
+          intent,
+          candidateCount: 0,
+          canonicalCount: 0,
+        }, "RECOMMENDATION_FAILED");
         if (intent === "mixed") {
-          const completion = await provider.chat([
-            { role: "system", content: POLICY_SYSTEM_PROMPT },
-            { role: "system", content: `STORE POLICY CONTEXT:\n${formatPolicyContext(policy.chunks)}` },
-            ...safeHistory(history),
-            { role: "user", content: message },
-          ]);
+          logSafeEvent(logger, "chatbot_recommendation_fallback", {
+            stage: "recommend",
+            intent,
+            code: safeRecommendationError.code,
+            candidateCount: 0,
+            canonicalCount: 0,
+          });
+          let completion;
+          try {
+            completion = await provider.chat([
+              { role: "system", content: POLICY_SYSTEM_PROMPT },
+              { role: "system", content: `STORE POLICY CONTEXT:\n${formatPolicyContext(policy.chunks)}` },
+              ...safeHistory(history),
+              { role: "user", content: message },
+            ]);
+          } catch (providerError) {
+            throw withStage(providerError, "provider", { intent });
+          }
           return { answer: completion.text, intent: "policy", sources, books: [] };
         }
-        throw withErrorCode(error, "RECOMMENDATION_FAILED");
+        throw safeRecommendationError;
+      }
+      const candidates = Array.isArray(recommendations?.books) ? recommendations.books : [];
+      try {
+        books = await canonicalBooks(candidates);
+      } catch (error) {
+        throw withStage(error, "canonical-lookup", {
+          intent,
+          candidateCount: candidates.length,
+          canonicalCount: 0,
+        });
+      }
+      if (candidates.length > 0 && books.length === 0) {
+        logSafeEvent(logger, "chatbot_recommendation_no_canonical_match", {
+          stage: "canonical-lookup",
+          intent,
+          candidateCount: candidates.length,
+          canonicalCount: 0,
+        });
       }
     }
 
@@ -177,7 +234,12 @@ function createChatbotService({ policyService, recommendationClient, provider, B
         ...safeHistory(history),
         { role: "user", content: message },
       ];
-    const completion = await provider.chat(messages);
+    let completion;
+    try {
+      completion = await provider.chat(messages);
+    } catch (error) {
+      throw withStage(error, "provider", { intent, candidateCount: books.length, canonicalCount: books.length });
+    }
     return { answer: completion.text, intent, sources, books };
   };
 
