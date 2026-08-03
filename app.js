@@ -21,16 +21,14 @@ const KnowledgeChunk = require("./models/KnowledgeChunk");
 const { createCsrfMiddleware } = require("./middleware/csrf");
 const { configurePassport } = require("./config/passport");
 const { requireAuth, requireAdmin } = require("./middleware/auth");
-const { renderForm, showValidation, validationResult } = require("./middleware/validation");
+const { renderForm, showValidation } = require("./middleware/validation");
 const { createRecommendationClient } = require("./services/recommendationClient");
 const { createAuthController } = require("./controllers/authController");
 const { createCatalogController } = require("./controllers/catalogController");
 const { createAdminController } = require("./controllers/adminController");
-const { createRecommendationController } = require("./controllers/recommendationController");
 const { createAuthRoutes } = require("./routes/authRoutes");
 const { createCatalogRoutes } = require("./routes/catalogRoutes");
 const { createAdminRoutes } = require("./routes/adminRoutes");
-const { createRecommendationRoutes } = require("./routes/recommendationRoutes");
 const { createContentSecurityPolicy } = require("./middleware/csp");
 const { createChatbotRuntime } = require("./services/chatbotRuntime");
 
@@ -70,7 +68,6 @@ function createApp({ sessionStore, recommendationClient = createRecommendationCl
   const authController = createAuthController({ User, bcrypt });
   const catalogController = createCatalogController({ Book, Comment });
   const adminController = createAdminController({ Book, recommendationClient });
-  const recommendationController = createRecommendationController({ recommendationClient });
   const cartController = createCartController({ Book });
   const checkoutController = createCheckoutController({ Book });
   const commentController = createCommentController({ Book, Comment });
@@ -90,11 +87,6 @@ function createApp({ sessionStore, recommendationClient = createRecommendationCl
     key: (req) => String(req.body?.username || "").trim().toLowerCase() || "anonymous",
   });
   const loginLimiter = (req, res, next) => loginIpLimiter(req, res, () => loginAccountLimiter(req, res, next));
-  const recommendationRateLimit = Number(process.env.RECOMMENDATION_RATE_LIMIT || aiRateLimit);
-  const recommendationLimiter = createRateLimiter({
-    max: Number.isInteger(recommendationRateLimit) && recommendationRateLimit > 0 ? recommendationRateLimit : 20,
-    key: (req) => `${req.user?.id || "anonymous"}:${req.ip || "unknown"}`,
-  });
   const chatbotLimiter = createRateLimiter({ max: Number.isInteger(aiRateLimit) && aiRateLimit > 0 ? aiRateLimit : 20 });
 
   app.use(createAuthRoutes({ controller: authController, passport, renderForm, showValidation, csrf: csrf.requireToken, limiter: loginLimiter }));
@@ -103,7 +95,6 @@ function createApp({ sessionStore, recommendationClient = createRecommendationCl
   app.use(createCheckoutRoutes({ controller: checkoutController, csrf: csrf.requireToken }));
   app.use(createCommentRoutes({ controller: commentController, requireAuth, csrf: csrf.requireToken }));
   app.use(createAdminRoutes({ controller: adminController, requireAuth, requireAdmin, showValidation, csrf: csrf.requireToken }));
-  app.use(createRecommendationRoutes({ controller: recommendationController, requireAuth, validationResult, csrf: csrf.requireToken, limiter: recommendationLimiter }));
   app.use(createChatbotRoutes({ controller: chatbotController, limiter: chatbotLimiter, csrf: csrf.requireToken }));
 
   app.use((req, res) => res.status(404).render("error", { status: 404, message: "The page you requested was not found." }));

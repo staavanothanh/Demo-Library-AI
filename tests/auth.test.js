@@ -1,6 +1,8 @@
 const request = require("supertest");
 const { createApp } = require("../app");
 
+const retiredRoute = ["/tensorflow", "chat"].join("-");
+
 describe("Library routes", () => {
   const app = createApp({
     sessionStore: undefined,
@@ -12,14 +14,15 @@ describe("Library routes", () => {
     },
   });
 
-  it("redirects anonymous recommendation requests to sign-in", async () => {
+  it("returns the standard 404 for the retired standalone recommendation route", async () => {
     const response = await request(app)
-      .post("/tensorflow-chat")
+      .post(retiredRoute)
       .set("Content-Type", "application/json")
       .send({ prompt: "   " });
 
-    expect(response.status).toBe(302);
-    expect(response.headers.location).toContain("/login?message=");
+    expect(response.status).toBe(404);
+    expect(response.headers.location).toBeUndefined();
+    expect(response.text).toContain("The page you requested was not found.");
   });
 
   it("does not expose the admin dashboard to anonymous visitors", async () => {

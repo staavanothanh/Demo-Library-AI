@@ -403,8 +403,7 @@ textarea:focus {
 }
 
 .notice,
-.errors,
-.recommendation-result {
+.errors {
   margin: 1.2rem 0;
   padding: .8rem 1rem;
   border-radius: var(--radius-sm);
